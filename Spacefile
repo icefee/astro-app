@@ -1,0 +1,13 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: astro-app
+    primary: true
+    public: true
+    src: .
+    engine: nodejs16
+    commands:
+      - npm run build
+    include:
+      - dist
+    run: "node ./dist/server/entry.mjs"
