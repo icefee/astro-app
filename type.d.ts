@@ -26,13 +26,21 @@ declare interface VideoInfo {
     dataList: VideoSource[]
 }
 
-interface ApiJsonSuccess<T = unknown> {
+declare interface SearchMusic {
+    id: string;
+    name: string;
+    artist: string;
+    url: string;
+    poster: string;
+}
+
+declare interface ApiJsonSuccess<T = unknown> {
     code: 0;
     data: T;
     msg: string;
 }
 
-interface ApiJsonFail {
+declare interface ApiJsonFail {
     code: -1;
     data: null;
     msg: string;

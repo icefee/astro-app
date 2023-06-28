@@ -5,6 +5,9 @@
     "paths": {
       "@util/*": [
         "src/util/*"
+      ],
+      "@adaptors/*": [
+        "src/adaptors/*"
       ]
     }
   }

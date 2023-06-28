@@ -12,5 +12,8 @@
   "dependencies": {
     "@astrojs/node": "^5.2.0",
     "astro": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18"
   }
 }
