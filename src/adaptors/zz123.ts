@@ -1,4 +1,4 @@
-import { getResponse, parseDuration, isTextNotNull, getTextWithTimeout } from './common';
+import { getResponse, parseLrcText, getTextWithTimeout } from './common';
 import { timeFormatter } from '@util/date';
 import { utf82utf16 } from '@util/parser';
 
@@ -74,9 +74,9 @@ async function getMusicInfo(id: string) {
         response => response.json() as Promise<MusicParseApiJson<MusicInfo>>
     )
     if (status === 200) {
-        return data;
+        return data
     }
-    return null;
+    return null
 }
 
 function transformUrl(url: string): string {
@@ -117,42 +117,26 @@ export async function parseMusicUrl(id: string) {
 
 export async function parseLrc(id: string) {
     try {
-        const info = await getMusicInfo(id);
-        const lines = info?.lrc.split(/\r?\n/) ?? [];
-        const lrcs = [];
-        for (const line of lines) {
-            const timeMatchReg = /\[\d{1,2}:\d{1,2}\.\d*\]/g;
-            const timeMatchs = line.match(timeMatchReg)
-            const text = line.replace(timeMatchReg, '')
-            if (timeMatchs) {
-                for (const timeMatch of timeMatchs) {
-                    lrcs.push({
-                        time: parseDuration(timeMatch.replace(/(\[|\])/g, '')),
-                        text
-                    })
-                }
-            }
-        }
+        const info = await getMusicInfo(id)
+        const lrcs = parseLrcText(info?.lrc!)
         return lrcs.filter(
             ({ text }) => {
-                const domain = new URL(baseUrl).hostname.replace(/.com/, '');
-                return isTextNotNull(text) && !text.match(new RegExp(domain));
+                const domain = new URL(baseUrl).hostname.replace(/.com/, '')
+                return !text.match(new RegExp(domain))
             }
-        ).sort(
-            (prev, next) => prev.time - next.time
         )
     }
     catch (err) {
-        return null;
+        return null
     }
 }
 
 export async function getLrcText(id: string) {
-    const lrc = await parseLrc(id);
+    const lrc = await parseLrc(id)
     return lrc?.map(
         ({ time, text }) => {
             const seconds = Math.floor(time)
             return `[${timeFormatter(seconds)}:${Math.round((time - seconds) * 1000)}]${text}`
         }
-    ).join('\n');
+    ).join('\n')
 }

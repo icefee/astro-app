@@ -1,14 +1,14 @@
-import { getTextWithTimeout, parseDuration, isTextNotNull } from './common';
-import { timeFormatter } from '@util/date';
+import { getTextWithTimeout, parseLrcText } from './common'
+import { timeFormatter } from '@util/date'
 
-export const key = 'g';
+export const key = 'g'
 
-export const baseUrl = 'https://www.gequbao.com';
+export const baseUrl = 'https://www.gequbao.com'
 
-export const lrcFile = true;
+export const lrcFile = true
 
 export async function getMusicSearch(s: string): Promise<SearchMusic[] | null> {
-    const url = `${baseUrl}/s/${s}`;
+    const url = `${baseUrl}/s/${s}`
     try {
         const html = await getTextWithTimeout(url)
         const matchBlocks = html?.replace(/[\n\r]+/g, '').replace(new RegExp('&amp;', 'g'), '&').match(
@@ -32,10 +32,10 @@ export async function getMusicSearch(s: string): Promise<SearchMusic[] | null> {
                 }
             )
         }
-        return [];
+        return []
     }
     catch (err) {
-        return null;
+        return null
     }
 }
 
@@ -50,7 +50,7 @@ export async function parsePoster(id: string) {
     try {
         const html = await getTextWithTimeout(`${baseUrl}/music/${id}`)
         const poster = parsePosterUrl(html!)
-        return poster;
+        return poster
     }
     catch (err) {
         return null
@@ -63,7 +63,7 @@ export async function parseMusicUrl(id: string) {
         const matchBlock = html?.match(
             /const url = 'https?:\/\/[^']+'/
         )
-        return matchBlock?.[0].match(/https?:\/\/[^']+/)![0];
+        return matchBlock?.[0].match(/https?:\/\/[^']+/)![0]
     }
     catch (err) {
         return null
@@ -73,24 +73,11 @@ export async function parseMusicUrl(id: string) {
 export async function parseLrc(id: string) {
     try {
         const lrc = await getTextWithTimeout(`${baseUrl}/download/lrc/${id}`)
-        const lines = lrc?.split(/\n/).filter(
-            line => isTextNotNull(line)
-        ).map(
-            line => {
-                const timeMatch = line.match(/\d{1,2}:\d{1,2}\.\d*/)
-                const textMatch = line.match(/(?<=]).+(?=($|\r))/)
-                return {
-                    time: parseDuration(timeMatch![0]),
-                    text: textMatch ? textMatch[0] : ''
-                }
-            }
-        ).filter(
-            ({ text }) => isTextNotNull(text)
-        )
-        return lines;
+        const lines = parseLrcText(lrc!)
+        return lines
     }
     catch (err) {
-        return null;
+        return null
     }
 }
 
@@ -101,7 +88,7 @@ export async function getLrcText(id: string) {
             const seconds = Math.floor(time)
             return `[${timeFormatter(seconds)}:${Math.round((time - seconds) * 1000)}]${text}`
         }
-    ).join('\n');
+    ).join('\n')
 }
 
 export function getLrcUrl(id: string) {
