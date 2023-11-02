@@ -1,4 +1,4 @@
-import { getTextWithTimeout, parseLrcText } from './common'
+import { getTextWithTimeout, getJson, parseLrcText } from './common'
 import { timeFormatter } from '@util/date'
 
 export const key = 'g'
@@ -57,13 +57,31 @@ export async function parsePoster(id: string) {
     }
 }
 
+async function getPlayUrl(id: string) {
+    const searchParams = new URLSearchParams({
+        id,
+        json: '1'
+    })
+    const { data } = await getJson<{
+        code: number;
+        data: {
+            url: string;
+        };
+    }>(`${baseUrl}/api/play_url?${searchParams}`)
+    return data.url
+}
+
 export async function parseMusicUrl(id: string) {
     try {
         const html = await getTextWithTimeout(`${baseUrl}/music/${id}`)
+        const urlMatcher = /https?:\/\/[^']+/
         const matchBlock = html?.match(
-            /window.mp3_url = 'https?:\/\/[^']+'/
+            new RegExp(`window.mp3_url = '${urlMatcher.source}'`)
         )
-        return matchBlock?.[0].match(/https?:\/\/[^']+/)![0]
+        if (matchBlock) {
+            return matchBlock[0].match(urlMatcher)?.[0]
+        }
+        return getPlayUrl(id)
     }
     catch (err) {
         return null
