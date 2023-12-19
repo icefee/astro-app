@@ -41,7 +41,7 @@ export async function getMusicSearch(s: string): Promise<SearchMusic[] | null> {
 
 function parsePosterUrl(html: string) {
     const matchBlock = html.match(
-        /cover:\s'https?:\/\/[^']+'/
+        /mp3_cover\s=\s'https?:\/\/[^']+'/
     )
     return matchBlock ? matchBlock[0].match(/https?:\/\/[^']+/)![0] : null
 }
