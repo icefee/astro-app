@@ -2,21 +2,28 @@ import type { APIRoute } from 'astro'
 import { createApiAdaptor, adaptors } from '@adaptors/.'
 import { httpHeaders } from '@util/common'
 
-export const get: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url }) => {
+    const headers = {
+        ...httpHeaders.json,
+        ...httpHeaders.cors
+    }
     try {
-        const s = url.searchParams.get('s')
-        const list: SearchMusic[] = [];
-
+        const s = url.searchParams.get('s')!
+        const data: SearchMusic[] = []
         for (const k of adaptors) {
-            const adaptor = createApiAdaptor(k);
-            const result = await adaptor?.getMusicSearch(s as string);
+            const adaptor = createApiAdaptor(k)
+            const result = await adaptor?.getMusicSearch(s)
             if (result) {
-                list.push(...result);
+                data.push(...result)
             }
         }
-        return new Response(JSON.stringify(list), {
+        return new Response(JSON.stringify({
+            code: 0,
+            data,
+            msg: '成功'
+        }), {
             status: 200,
-            headers: httpHeaders.json
+            headers
         })
     }
     catch (err) {
@@ -26,7 +33,7 @@ export const get: APIRoute = async ({ url }) => {
             msg: String(err)
         }), {
             status: 503,
-            headers: httpHeaders.json
+            headers
         })
     }
 }

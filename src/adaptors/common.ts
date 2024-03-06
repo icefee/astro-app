@@ -1,6 +1,6 @@
 import type { Adaptor } from '.'
-import { isTextNotNull } from '../util/string'
-export { isTextNotNull } from '@util/string'
+import { isTextNotNull } from '@util/string'
+export { isTextNotNull, escapeSymbols } from '@util/string'
 
 export const defaultPoster = `/poster.jpg`
 

@@ -3,7 +3,11 @@ import { Api } from '@util/config'
 import { httpHeaders } from '@util/common'
 import Clue from '@util/clue'
 
-export const get: APIRoute = async ({ params, url }) => {
+export const GET: APIRoute = async ({ params, url }) => {
+    const headers = {
+        ...httpHeaders.json,
+        ...httpHeaders.cors
+    }
     try {
         if (!params.id) {
             throw new Error('param {id} must be provided')
@@ -21,10 +25,9 @@ export const get: APIRoute = async ({ params, url }) => {
             }
         }
         else {
-            const payload = await response.text()
-            return new Response(payload, {
+            return new Response(response.body, {
                 status: 200,
-                headers: httpHeaders.json
+                headers
             })
         }
     }
@@ -35,7 +38,7 @@ export const get: APIRoute = async ({ params, url }) => {
             msg: String(err)
         }), {
             status: 503,
-            headers: httpHeaders.json
+            headers
         })
     }
 }

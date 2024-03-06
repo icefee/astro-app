@@ -2,14 +2,16 @@ import type { APIRoute } from 'astro'
 import { Api } from '@util/config'
 import { httpHeaders } from '@util/common'
 
-export const get: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url }) => {
+    const headers = {
+        ...httpHeaders.json,
+        ...httpHeaders.cors
+    }
     try {
-        const payload = await fetch(`${Api.site}/api/video/list?${url.searchParams}`).then(
-            response => response.text()
-        )
-        return new Response(payload, {
+        const response = await fetch(`${Api.site}/api/video/list?${url.searchParams}`)
+        return new Response(response.body, {
             status: 200,
-            headers: httpHeaders.json
+            headers
         })
     }
     catch (err) {
@@ -19,7 +21,7 @@ export const get: APIRoute = async ({ url }) => {
             msg: String(err)
         }), {
             status: 503,
-            headers: httpHeaders.json
+            headers
         })
     }
 }

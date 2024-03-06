@@ -1,4 +1,4 @@
-import { getTextWithTimeout, getJson, parseLrcText } from './common'
+import { getTextWithTimeout, getJson, parseLrcText, escapeSymbols } from './common'
 import { timeFormatter } from '@util/date'
 
 export const key = 'g'
@@ -11,8 +11,8 @@ export async function getMusicSearch(s: string): Promise<SearchMusic[] | null> {
     const url = `${baseUrl}/s/${s}`
     try {
         const html = await getTextWithTimeout(url)
-        const matchBlocks = html?.replace(/[\n\r]+/g, '').replace(new RegExp('&amp;', 'g'), '&').match(
-            /<div class="row">\s*<div class="col-5 col-content">\s*<a href="\/music\/\d+"\s*class="text-primary font-weight-bold"\s+target="_blank">[^<]+<\/a>\s*<\/div>\s*<div class="text-success col-4 col-content">[^<]+<\/div>\s*<div class="col-3 col-content">\s*<a href="\/music\/\d+" target="_blank"><u>下载<\/u><\/a>\s*<\/div>\s*<\/div>/g
+        const matchBlocks = escapeSymbols(html!).replace(/[\n\r]+/g, '').match(
+            /<div class="row">\s*<div class="col-5 col-content">\s*<a href="\/music\/\d+"\s*class="text-primary font-weight-bold"\s+target="_blank">[^<]+<\/a>\s*<\/div>\s*<div class="text-success col-4 col-content">[^<]+<\/div>\s*<div class="col-3 col-content text-right">\s*<a href="\/music\/\d+" target="_blank"><u>下载<\/u><\/a>\s*<\/div>\s*<\/div>/g
         )
         if (matchBlocks) {
             return matchBlocks.map(

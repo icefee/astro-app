@@ -2,7 +2,11 @@ import type { APIRoute } from 'astro'
 import { createApiAdaptor, parseId } from '@adaptors/.'
 import { httpHeaders } from '@util/common'
 
-export const get: APIRoute = async ({ params }) => {
+export const GET: APIRoute = async ({ params }) => {
+    const headers = {
+        ...httpHeaders.json,
+        ...httpHeaders.cors
+    }
     try {
         const { key, id } = parseId(params.id!);
         const adaptor = createApiAdaptor(key)!;
@@ -13,7 +17,7 @@ export const get: APIRoute = async ({ params }) => {
                 data: lrc,
                 msg: '成功'
             }), {
-                headers: httpHeaders.json
+                headers
             })
         }
         else {
@@ -26,7 +30,7 @@ export const get: APIRoute = async ({ params }) => {
             data: null,
             msg: String(err)
         }), {
-            headers: httpHeaders.json
+            headers
         })
     }
 }
