@@ -1,3 +1,7 @@
+export const unsafe_fetch: typeof fetch = (...args) => {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+    return fetch(...args)
+}
 
 export namespace httpHeaders {
 
