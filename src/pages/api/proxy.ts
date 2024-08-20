@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
 import { httpHeaders, unsafe_fetch } from '@util/common'
+import { userAgent } from '@util/env'
 
 const inheritedHeaders: Array<{
     key: string;
@@ -27,10 +28,12 @@ export const GET: APIRoute = async ({ url, request }) => {
     const params = url.searchParams
     const targetUrl = params.get('url'), cors = params.get('cors') === '1'
     if (targetUrl) {
+        let headers = new Headers(request.headers)
+        headers.set('user-agent', userAgent)
         const { body, status, headers: originHeaders } = await unsafe_fetch(targetUrl, {
-            headers: request.headers
+            headers
         })
-        const headers = new Headers(cors ? httpHeaders.cors : undefined)
+        headers = new Headers(cors ? httpHeaders.cors : undefined)
         for (const { key, defaultValue } of inheritedHeaders) {
             const value = originHeaders.get(key) ?? defaultValue;
             if (value) {
