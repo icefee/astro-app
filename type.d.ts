@@ -67,6 +67,7 @@ declare namespace ProxyVideo {
     export interface ParsedResult<T = ParsedVideo> extends Pick<SearchResult<T>, 'page'> {
         list: T[];
         total: number;
+        host: string;
     }
 
     interface VideoBase {

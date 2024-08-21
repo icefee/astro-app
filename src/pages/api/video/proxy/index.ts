@@ -148,7 +148,10 @@ export const GET: APIRoute = async ({ url }) => {
             }
             return Response.json({
                 code: 0,
-                data,
+                data: {
+                    ...data,
+                    host
+                },
                 msg: '成功'
             }, {
                 headers
