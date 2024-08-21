@@ -9,12 +9,10 @@ const posterUrl = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
-const userAgentHeaders = {
-    'user-agent': userAgent
-}
-
 export const getHtml = (url: string) => getText(url, {
-    headers: userAgentHeaders
+    headers: {
+        'user-agent': userAgent
+    }
 })
 
 export async function checkHost() {
@@ -102,7 +100,6 @@ async function getSearch(host: string, title: string, page: number) {
     try {
         const { data, totalPage: total, ...rest } = await fetch(`https://s.${host}/search`, {
             method: 'POST',
-            headers: userAgentHeaders,
             body: new URLSearchParams({
                 title,
                 current: String(page),
