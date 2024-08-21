@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getText } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { isDev } from '@util/env'
+import { isDev, userAgent } from '@util/env'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
@@ -20,7 +20,11 @@ export async function checkHost() {
 
 async function getMatch(url: string, reg: RegExp) {
     try {
-        const html = await getText(url)
+        const html = await getText(url, {
+            headers: {
+                'user-agent': userAgent
+            }
+        })
         const matchedResult = html.match(reg)
         if (matchedResult) {
             return matchedResult[0]
