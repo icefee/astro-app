@@ -9,6 +9,14 @@ const posterUrl = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
+const userAgentHeaders = {
+    'user-agent': userAgent
+}
+
+export const getHtml = (url: string) => getText(url, {
+    headers: userAgentHeaders
+})
+
 export async function checkHost() {
     const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
     const matchBlock = await getMatch(
@@ -20,11 +28,7 @@ export async function checkHost() {
 
 async function getMatch(url: string, reg: RegExp) {
     try {
-        const html = await getText(url, {
-            headers: {
-                'user-agent': userAgent
-            }
-        })
+        const html = await getHtml(url)
         const matchedResult = html.match(reg)
         if (matchedResult) {
             return matchedResult[0]
@@ -43,7 +47,7 @@ async function getLatest(host: string, page: number) {
     }
     url += '/index.html'
     try {
-        const html = await getText(url)
+        const html = await getHtml(url)
         let totalMatch = html.match(
             /<a href=\"\/video\/page\/\d{1,9}\/\" aria-label=\"末页\">/g
         )?.[0].match(/[1-9]\d{1,8}/g)?.[0]
@@ -98,6 +102,7 @@ async function getSearch(host: string, title: string, page: number) {
     try {
         const { data, totalPage: total, ...rest } = await fetch(`https://s.${host}/search`, {
             method: 'POST',
+            headers: userAgentHeaders,
             body: new URLSearchParams({
                 title,
                 current: String(page),

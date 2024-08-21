@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro'
-import { getText } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { checkHost, posterMatchReg } from './'
+import { checkHost, getHtml, posterMatchReg } from './'
 
 async function parseVideo(url: string, related: boolean) {
     try {
-        const html = await getText(url)
+        const html = await getHtml(url)
         const urls = {} as Record<'mp4' | 'm3u8', string | undefined>
         urls.mp4 = html.match(
             /https:\/\/[\da-z]{4,10}\.[a-z]{2,5}\/assets\/[\da-z]+\.(mp4|webm)/g
@@ -17,7 +16,7 @@ async function parseVideo(url: string, related: boolean) {
         const scriptUrl = html.match(
             /https:\/\/\w+\.\w+.\w+\/gs\.js/
         )![0]
-        const scriptSource = await getText(scriptUrl)
+        const scriptSource = await getHtml(scriptUrl)
         const cdnSource = scriptSource.match(
             /(?<=var\spturl\s=\s).+?(?=;)/
         )![0]
@@ -31,7 +30,7 @@ async function parseVideo(url: string, related: boolean) {
             )
             if (dataUrlMatch) {
                 const dataUrl = dataUrlMatch[0]
-                const source = await getText(dataUrl)
+                const source = await getHtml(dataUrl)
                 const dataList = source.match(
                     /{[^}]+}/gm
                 )!.map(
@@ -77,13 +76,13 @@ async function parseVideo(url: string, related: boolean) {
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
-    const id = params.get('id')!, related = params.get('related'), origin = params.get('origin')
+    const id = params.get('id')!, related = params.get('related')
+    let host = params.get('origin') ?? await checkHost()
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
-        const host = await checkHost()
         if (host) {
             const videoId = +id
             const relatedRequired = related === '1'
