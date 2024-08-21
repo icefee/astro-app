@@ -68,6 +68,7 @@ declare namespace ProxyVideo {
         list: T[];
         total: number;
         host: string;
+        posterPrefix: string;
     }
 
     interface VideoBase {
