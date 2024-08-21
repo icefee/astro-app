@@ -28,12 +28,12 @@ export const GET: APIRoute = async ({ url, request }) => {
     const params = url.searchParams
     const targetUrl = params.get('url'), cors = params.get('cors') === '1'
     if (targetUrl) {
-        let headers = new Headers(request.headers)
-        headers.set('user-agent', userAgent)
         const { body, status, headers: originHeaders } = await unsafe_fetch(targetUrl, {
-            headers
+            headers: {
+                'user-agent': userAgent
+            }
         })
-        headers = new Headers(cors ? httpHeaders.cors : undefined)
+        const headers = new Headers(cors ? httpHeaders.cors : undefined)
         for (const { key, defaultValue } of inheritedHeaders) {
             const value = originHeaders.get(key) ?? defaultValue;
             if (value) {
