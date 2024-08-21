@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro'
 import { httpHeaders } from '@util/common'
 
-export const GET: APIRoute = ({ params, request }) => {
+export const GET: APIRoute = () => {
     return new Response(JSON.stringify({
         message: "It's works!"
     }), {
-        status: 200,
         headers: httpHeaders.json
     })
 }

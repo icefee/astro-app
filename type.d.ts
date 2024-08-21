@@ -47,3 +47,47 @@ declare interface ApiJsonFail {
 }
 
 declare type ApiJsonType<T = unknown> = ApiJsonSuccess<T> | ApiJsonFail;
+
+declare namespace ProxyVideo {
+
+    export interface SearchVideo {
+        videoInfoId: number;
+        videoTitle: string;
+        pageUrl: string;
+        createTime: string;
+        videoImgUrl: string;
+    }
+
+    export interface SearchResult<T = SearchVideo> {
+        data: T[];
+        totalPage: number;
+        page: number;
+    }
+
+    export interface ParsedResult<T = ParsedVideo> extends Pick<SearchResult<T>, 'page'> {
+        list: T[];
+        total: number;
+    }
+
+    interface VideoBase {
+        id: number;
+        title: string;
+        poster: string;
+    }
+
+    export interface ParsedVideo extends VideoBase {
+        createTime: string | null;
+        origin: string | null;
+    }
+
+    export interface VideoData extends VideoBase {
+        urls: {
+            mp4: string;
+            m3u8: string;
+        };
+    }
+
+    export interface VideoInfo extends VideoData {
+        related: ParsedVideo[];
+    }
+}

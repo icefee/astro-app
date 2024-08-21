@@ -30,6 +30,7 @@ export const GET: APIRoute = async ({ url, request }) => {
     if (targetUrl) {
         const { body, status, headers: originHeaders } = await unsafe_fetch(targetUrl, {
             headers: {
+                ...request.headers,
                 'user-agent': userAgent
             }
         })
@@ -46,7 +47,6 @@ export const GET: APIRoute = async ({ url, request }) => {
         })
     }
     return new Response('invalid url', {
-        status: 200,
         headers: httpHeaders.html
     })
 }

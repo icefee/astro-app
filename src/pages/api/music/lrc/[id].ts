@@ -12,11 +12,11 @@ export const GET: APIRoute = async ({ params }) => {
         const adaptor = createApiAdaptor(key)!;
         const lrc = await adaptor.parseLrc(id);
         if (lrc) {
-            return new Response(JSON.stringify({
+            return Response.json({
                 code: 0,
                 data: lrc,
                 msg: '成功'
-            }), {
+            }, {
                 headers
             })
         }
@@ -25,11 +25,11 @@ export const GET: APIRoute = async ({ params }) => {
         }
     }
     catch (err) {
-        return new Response(JSON.stringify({
+        return Response.json({
             code: -1,
             data: null,
             msg: String(err)
-        }), {
+        }, {
             headers
         })
     }

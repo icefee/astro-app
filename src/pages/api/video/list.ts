@@ -10,16 +10,15 @@ export const GET: APIRoute = async ({ url }) => {
     try {
         const response = await fetch(`${Api.site}/api/video/list?${url.searchParams}`)
         return new Response(response.body, {
-            status: 200,
             headers
         })
     }
     catch (err) {
-        return new Response(JSON.stringify({
+        return Response.json({
             code: -1,
             data: null,
             msg: String(err)
-        }), {
+        }, {
             status: 503,
             headers
         })

@@ -17,21 +17,20 @@ export const GET: APIRoute = async ({ url }) => {
                 data.push(...result)
             }
         }
-        return new Response(JSON.stringify({
+        return Response.json({
             code: 0,
             data,
             msg: '成功'
-        }), {
-            status: 200,
+        }, {
             headers
         })
     }
     catch (err) {
-        return new Response(JSON.stringify({
+        return Response.json({
             code: -1,
             data: null,
             msg: String(err)
-        }), {
+        }, {
             status: 503,
             headers
         })
