@@ -5,7 +5,7 @@ import { isDev, userAgent } from '@util/env'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
-const posterUrl = 'https://v1imvvfc356.salantool.com'
+const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
@@ -112,7 +112,7 @@ async function getSearch(host: string, title: string, page: number) {
         const list = data.map(
             ({ videoInfoId: id, videoImgUrl, videoTitle: title, createTime }) => ({
                 id,
-                poster: posterUrl + videoImgUrl,
+                poster: posterPrefix + videoImgUrl,
                 title,
                 createTime
             })
@@ -148,7 +148,11 @@ export const GET: APIRoute = async ({ url }) => {
             }
             return Response.json({
                 code: 0,
-                data,
+                data: {
+                    ...data,
+                    host,
+                    posterPrefix
+                },
                 msg: '成功'
             }, {
                 headers
