@@ -1,4 +1,5 @@
 export const unsafe_fetch: typeof fetch = (...args) => {
+    /* @ts-ignore */
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     return fetch(...args)
 }
