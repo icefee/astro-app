@@ -10,9 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^9.1.0",
-    "@astrojs/node": "^7.0.1",
-    "astro": "^4.0.6"
+    "@astrojs/cloudflare": "^11.1.0",
+    "@astrojs/node": "^8.3.4",
+    "astro": "^4.16.7"
   },
   "devDependencies": {
     "@types/node": "^18"
