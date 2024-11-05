@@ -5,6 +5,7 @@ import { isDev, userAgent } from '@util/env'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
+const temporaryCheckUrl = 'https://mjv81xw.com'
 const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
@@ -14,15 +15,6 @@ export const getHtml = (url: string) => getText(url, {
         'user-agent': userAgent
     }
 })
-
-export async function checkHost() {
-    const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
-    const matchBlock = await getMatch(
-        isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
-        new RegExp(`最新地址一：<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
-    )
-    return matchBlock?.match(urlMatchReg)?.[0]
-}
 
 async function getMatch(url: string, reg: RegExp) {
     try {
@@ -36,6 +28,31 @@ async function getMatch(url: string, reg: RegExp) {
     catch (err) {
         return null
     }
+}
+
+async function checkHostTemporary() {
+    const hostMatchReg = /var\symdz1\s\=\s"\w+"/
+    const matchBlock = await getMatch(
+        temporaryCheckUrl,
+        hostMatchReg
+    )
+    const matchedHost = matchBlock?.match(/\w+"$/)?.[0]?.replace('"', '')
+    if (matchedHost) {
+        return `${matchedHost}.mom`
+    }
+}
+
+export async function checkHost() {
+    let url = await checkHostTemporary()
+    if (!url) {
+        const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
+        const matchBlock = await getMatch(
+            isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
+            new RegExp(`最新地址一：<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
+        )
+        url = matchBlock?.match(urlMatchReg)?.[0]
+    }
+    return url
 }
 
 async function getLatest(host: string, page: number) {
