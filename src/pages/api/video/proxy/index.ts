@@ -87,10 +87,10 @@ async function getLatest(host: string) {
                 }
             ]
         }>(`https://${host}/home`)
-        return [
+        return parseDataList([
             ...data[0].result1,
             ...data[1].result2
-        ]
+        ])
     }
     catch (err) {
         return null
@@ -124,13 +124,14 @@ export const GET: APIRoute = async ({ url }) => {
         const host = await checkHost()
         if (host) {
             const page = p ? Number(p) : 1
-            let list = null
+            let list: ProxyVideo.VideoBase[] | null = null
             if (s === '') {
                 list = await getLatest(host)
             }
             else {
                 list = await getSearch(host, s, page)
             }
+            list ??= []
             return Response.json({
                 code: 0,
                 data: {
