@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { checkHost } from './'
+import { checkHost, parseDataList } from './'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
@@ -19,7 +19,7 @@ export const GET: APIRoute = async ({ url }) => {
             return Response.json({
                 code: 0,
                 data: {
-                    list: data,
+                    list: parseDataList(data),
                     host
                 },
                 msg: '成功'
