@@ -6,7 +6,7 @@ import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
-// const posterPrefix = 'https://v1imvvfc356.salantool.com'
+const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
@@ -106,7 +106,12 @@ async function getSearch(host: string, title: string, page: number) {
         const { data } = await getJson<ProxyVideo.SearchResult>(
             `https://${host}/api/searchs?${searchParams}`
         )
-        return parseDataList(data)
+        return parseDataList(data).map(
+            ({ poster, ...rest }) => ({
+                ...rest,
+                poster: `${posterPrefix}/p2/${poster}.webp`
+            })
+        )
     }
     catch (err) {
         return null
