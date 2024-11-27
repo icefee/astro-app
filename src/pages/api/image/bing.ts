@@ -1,21 +1,19 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/.'
 
-export const GET: APIRoute = async ({ url }) => {
-    const params = url.searchParams
-    let api = 'https://peapix.com/bing/feed'
-    if (url.searchParams.size > 0) {
-        api += `?${params}`
-    }
-    const data = await getJson<Array<{
-        title: string;
-        copyright: string;
-        fullUrl: string;
-        thumbUrl: string;
-        imageUrl: string;
-        pageUrl: string;
-        date: string;
-    }>>(api)
-    const imageUrl = data[Math.floor(Math.random() * data.length)].imageUrl
+export const GET: APIRoute = async () => {
+    const url = new URL('https://cn.bing.com/hp/api/v1/imagegallery?format=json')
+    const { data: { images } } = await getJson<{
+        data: {
+            images: Array<{
+                imageUrls: Record<'landscape' | 'portrait', {
+                    highDef: string;
+                    ultraHighDef: string;
+                    wallpaper: string;
+                }>
+            }>;
+        }
+    }>(url)
+    const imageUrl = url.origin + images[Math.floor(Math.random() * images.length)].imageUrls.landscape.highDef
     return Response.redirect(imageUrl)
 }
