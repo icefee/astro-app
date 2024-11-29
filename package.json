@@ -1,7 +1,7 @@
 {
   "name": "astro-app",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,10 +12,10 @@
   "dependencies": {
     "@astrojs/cloudflare": "^11.2.0",
     "@astrojs/node": "^8.3.4",
-    "astro": "^4.16.14"
+    "astro": "^4.16.16"
   },
   "devDependencies": {
-    "@types/node": "^18"
+    "@types/node": "^20"
   },
   "license": "MIT"
 }

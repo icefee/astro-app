@@ -14,6 +14,6 @@ export const GET: APIRoute = async () => {
             }>;
         }
     }>(url)
-    const imageUrl = url.origin + images[Math.floor(Math.random() * images.length)].imageUrls.landscape.highDef
+    const imageUrl = url.origin + images[0].imageUrls.landscape.highDef
     return Response.redirect(imageUrl)
 }
