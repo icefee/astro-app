@@ -1,10 +1,13 @@
 import type { APIRoute } from 'astro'
-import { getTextWithTimeout } from '@adaptors/.'
+import { getJson } from '@adaptors/.'
 
 export const GET: APIRoute = async () => {
-    const source = await getTextWithTimeout('https://cn.bing.com/chrome/newtab')
-    const imageUrl = source?.match(
-        new RegExp('https://s.cn.bing.net/th\\?id=[\\w-.]+?.webp')
-    )?.[0]
-    return imageUrl ? Response.redirect(imageUrl) : new Response(null, { status: 404, statusText: 'Not found' })
+    const url = new URL('https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
+    const { images } = await getJson<{
+        images: Array<{
+            title: string;
+            url: string;
+        }>;
+    }>(url)
+    return Response.redirect(url.origin + images[0].url)
 }
