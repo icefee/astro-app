@@ -21,6 +21,10 @@ const inheritedHeaders: Array<{
         {
             key: 'content-disposition',
             defaultValue: null
+        },
+        {
+            key: 'set-cookie',
+            defaultValue: null
         }
     ]
 
