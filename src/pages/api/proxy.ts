@@ -19,6 +19,10 @@ const inheritedHeaders: Array<{
             defaultValue: 'chunked'
         },
         {
+            key: 'accept-ranges',
+            defaultValue: 'bytes'
+        },
+        {
             key: 'content-disposition',
             defaultValue: null
         },
@@ -32,11 +36,11 @@ export const GET: APIRoute = async ({ url, request }) => {
     const params = url.searchParams
     const targetUrl = params.get('url'), cors = params.get('cors') === '1'
     if (targetUrl) {
+        const requestHeaders = new Headers(request.headers)
+        requestHeaders.delete('host')
+        requestHeaders.set('user-agent', userAgent)
         const { body, status, headers: originHeaders } = await unsafe_fetch(targetUrl, {
-            headers: {
-                ...request.headers,
-                'user-agent': userAgent
-            }
+            headers: requestHeaders
         })
         const headers = new Headers(cors ? httpHeaders.cors : undefined)
         for (const { key, defaultValue } of inheritedHeaders) {
