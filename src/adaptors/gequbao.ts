@@ -1,4 +1,4 @@
-import { getTextWithTimeout, getJson, parseLrcText, escapeSymbols } from './common'
+import { getTextWithTimeout, getJson, parseLrcText, escapeSymbols } from '.'
 import { timeFormatter } from '@util/date'
 
 export const key = 'g'

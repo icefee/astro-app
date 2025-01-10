@@ -1,4 +1,4 @@
-import { getResponse, parseLrcText, getTextWithTimeout } from './common';
+import { getResponse, parseLrcText, getTextWithTimeout } from '.';
 import { timeFormatter } from '@util/date';
 import { utf82utf16 } from '@util/parser';
 

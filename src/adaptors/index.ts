@@ -1,22 +1,26 @@
-import * as g from './gequbao';
-import * as z from './zz123';
+import * as g from './gequbao'
+import * as z from './zz123'
+import * as t from './2t58'
 
-export * from './common';
+export * from './common'
 
-export type Adaptor = typeof g.key | typeof z.key
+export type Adaptor = typeof g.key | typeof z.key | typeof t.key
 
 export const adaptors: Adaptor[] = [
     z.key,
-    g.key
+    g.key,
+    t.key
 ]
 
 export function createApiAdaptor(key: Adaptor) {
     switch (key) {
         case g.key:
-            return g;
+            return g
         case z.key:
-            return z;
+            return z
+        case t.key:
+            return t
         default:
-            break;
+            break
     }
 }
