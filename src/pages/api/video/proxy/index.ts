@@ -106,7 +106,6 @@ async function getSearch(host: string, text: string, page: number) {
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const s = params.get('s') ?? '', p = params.get('p')
-    let host = params.get('host')
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
