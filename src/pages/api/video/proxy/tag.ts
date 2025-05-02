@@ -32,7 +32,7 @@ export const GET: APIRoute = async ({ url }) => {
             return Response.json({
                 code: 0,
                 data: {
-                    ...parseProxyVideoData(data),
+                    ...parseProxyVideoData<ProxyVideo.PagedList>(data),
                     host
                 },
                 msg: '成功'

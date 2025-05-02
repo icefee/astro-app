@@ -1,9 +1,6 @@
 import CryptoJS from 'crypto-js'
 
-export function parseProxyVideoData({ iv, data }: ProxyVideo.ApiJson): {
-    list: ProxyVideo.SearchVideo[];
-    count: number;
-} | null {
+export function parseProxyVideoData<T>({ iv, data }: ProxyVideo.ApiJson): T | null {
     const e = CryptoJS.enc.Utf8.parse('AaWEabcd123789eF')
         , n = CryptoJS.enc.Base64.parse(iv)
         , s = CryptoJS.lib.CipherParams.create({

@@ -76,6 +76,11 @@ declare namespace ProxyVideo {
         body: string;
     }
 
+    export interface PagedList {
+        list: SearchVideo[];
+        count: number;
+    }
+
     export interface TypedSearchVideo extends SearchVideo {
         typename: string;
     }

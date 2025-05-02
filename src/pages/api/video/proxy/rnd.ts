@@ -4,7 +4,8 @@ import { httpHeaders } from '@util/common'
 import { checkHost } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ url }) => {
+    const params = url.searchParams
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
@@ -12,13 +13,15 @@ export const GET: APIRoute = async () => {
     try {
         const host = await checkHost()
         if (host) {
-            const data = await getJson<ProxyVideo.ApiJson>(
-                `https://${host}/api/t1j2/l1_dddd`
-            )
+            let apiUrl = `https://${host}/api/t1j2/l1_dddd`
+            if (params.get('type')) {
+                apiUrl += '?type=index'
+            }
+            const data = await getJson<ProxyVideo.ApiJson>(apiUrl)
             return Response.json({
                 code: 0,
                 data: {
-                    ...parseProxyVideoData(data),
+                    list: parseProxyVideoData(data),
                     host
                 },
                 msg: '成功'

@@ -70,9 +70,13 @@ export async function getMetadata(host: string) {
 async function getLatest(host: string) {
     try {
         const data = await getJson<ProxyVideo.ApiJson>(
-            `https://${host}/api/t1j2/l1_dddd?type=index`
+            `https://${host}/api/s1y2/f1_l2_l3_bbbb`
         )
-        return parseProxyVideoData(data)
+        return {
+            list: parseProxyVideoData<{
+                list: ProxyVideo.SearchVideo[];
+            } & ProxyVideo.Meta>(data)
+        }
     }
     catch (err) {
         return null
@@ -96,7 +100,7 @@ async function getSearch(host: string, text: string, page: number) {
                 body: JSON.stringify(payload)
             }
         )
-        return parseProxyVideoData(data)
+        return parseProxyVideoData<ProxyVideo.PagedList>(data)
     }
     catch (err) {
         return null
