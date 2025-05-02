@@ -45,7 +45,7 @@ async function checkHostTemporary() {
 }
 */
 
-export async function checkHost() {
+async function checkHost() {
     const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
     const matchBlock = await getMatch(
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
@@ -54,17 +54,15 @@ export async function checkHost() {
     return matchBlock?.match(urlMatchReg)?.[0] ?? null
 }
 
-export async function getMetadata(host: string) {
-    const { playurl, tags } = await getJson<{
-        playurl: string[];
-        playurl2: string[];
-        tags: string[];
-    }>(`https://${host}/c.json`)
-    const prefix = playurl[Math.floor(Math.random() * playurl.length)]
-    return {
-        prefix,
-        tags
+export async function withHost(params: URLSearchParams) {
+    let host = params.get('host')
+    if (!host) {
+        host = await checkHost()
     }
+    if (host) {
+        return host
+    }
+    throw new Error('Invalid host')
 }
 
 async function getLatest(host: string) {
@@ -94,9 +92,7 @@ async function getSearch(host: string, text: string, page: number) {
             `https://${host}/api/s1s2/l1_bbbb`,
             {
                 method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
+                headers: httpHeaders.json,
                 body: JSON.stringify(payload)
             }
         )
@@ -116,32 +112,25 @@ export const GET: APIRoute = async ({ url }) => {
         ...httpHeaders.cors
     }
     try {
-        if (!host) {
-            host = await checkHost()
-        }
-        if (host) {
-            const page = p ? Number(p) : 1
-            let data = null
-            if (s === '') {
-                data = await getLatest(host)
-            }
-            else {
-                data = await getSearch(host, s, page)
-            }
-            return Response.json({
-                code: 0,
-                data: {
-                    ...data,
-                    host
-                },
-                msg: '成功'
-            }, {
-                headers
-            })
+        const host = await withHost(params)
+        const page = p ? Number(p) : 1
+        let data = null
+        if (s === '') {
+            data = await getLatest(host)
         }
         else {
-            throw new Error('Invalid host')
+            data = await getSearch(host, s, page)
         }
+        return Response.json({
+            code: 0,
+            data: {
+                ...data,
+                host
+            },
+            msg: '成功'
+        }, {
+            headers
+        })
     }
     catch (err) {
         return Response.json({

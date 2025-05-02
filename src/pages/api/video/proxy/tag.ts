@@ -1,51 +1,41 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { checkHost } from './'
+import { withHost } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const t = params.get('t') ?? '', p = params.get('p') ?? 1
-    let host = params.get('host')
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
-        if (!host) {
-            host = await checkHost()
+        const host = await withHost(params)
+        const payload = {
+            type: t,
+            page: p,
+            pageSize: 12
         }
-        if (host) {
-            const payload = {
-                type: t,
-                page: p,
-                pageSize: 12
+        const data = await getJson<ProxyVideo.ApiJson>(
+            `https://${host}/api/f1l2/l1_aaaa`,
+            {
+                method: 'POST',
+                headers: httpHeaders.json,
+                body: JSON.stringify(payload)
             }
-            const data = await getJson<ProxyVideo.ApiJson>(
-                `https://${host}/api/f1l2/l1_aaaa`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                }
-            )
-            return Response.json({
-                code: 0,
-                data: {
-                    ...parseProxyVideoData<ProxyVideo.PagedList>(data),
-                    host
-                },
-                msg: '成功'
-            }, {
-                headers
-            })
-        }
-        else {
-            throw new Error('Invalid host')
-        }
+        )
+        return Response.json({
+            code: 0,
+            data: {
+                ...parseProxyVideoData<ProxyVideo.PagedList>(data),
+                host
+            },
+            msg: '成功'
+        }, {
+            headers
+        })
     }
     catch (err) {
         return Response.json({

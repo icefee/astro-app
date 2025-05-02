@@ -7,17 +7,17 @@ export const unsafe_fetch: typeof fetch = (...args) => {
 export namespace httpHeaders {
 
     export const json = {
-        'Content-Type': 'application/json'
+        'content-type': 'application/json'
     }
 
     export const html = {
-        'Content-Type': 'text/html'
+        'content-type': 'text/html'
     }
 
     export const cors = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET,OPTIONS',
-        'Access-Control-Allow-Headers': 'Range,Cache-Control',
-        'Access-Control-Expose-Headers': 'Content-Length,Content-Range,Content-Disposition'
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET,OPTIONS',
+        'access-control-allow-headers': 'Range,Cache-Control',
+        'access-control-expose-headers': 'Content-Length,Content-Range,Content-Disposition'
     }
 }
