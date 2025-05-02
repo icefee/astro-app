@@ -6,12 +6,15 @@ import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
+    let host = params.get('host')
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
-        const host = await checkHost()
+        if (!host) {
+            host = await checkHost()
+        }
         if (host) {
             let apiUrl = `https://${host}/api/t1j2/l1_dddd`
             if (params.get('type')) {
@@ -21,7 +24,7 @@ export const GET: APIRoute = async ({ url }) => {
             return Response.json({
                 code: 0,
                 data: {
-                    list: parseProxyVideoData(data),
+                    list: parseProxyVideoData<ProxyVideo.SearchVideo[]>(data),
                     host
                 },
                 msg: '成功'

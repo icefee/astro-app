@@ -51,7 +51,7 @@ export async function checkHost() {
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
         new RegExp(`最新地址一：<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
     )
-    return matchBlock?.match(urlMatchReg)?.[0]
+    return matchBlock?.match(urlMatchReg)?.[0] ?? null
 }
 
 export async function getMetadata(host: string) {
@@ -110,12 +110,15 @@ async function getSearch(host: string, text: string, page: number) {
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const s = params.get('s') ?? '', p = params.get('p')
+    let host = params.get('host')
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
-        const host = await checkHost()
+        if (!host) {
+            host = await checkHost()
+        }
         if (host) {
             const page = p ? Number(p) : 1
             let data = null

@@ -60,6 +60,7 @@ declare namespace ProxyVideo {
     export interface Meta {
         name: string;
         value: string;
+        type?: string;
     }
 
     export interface SearchVideo {

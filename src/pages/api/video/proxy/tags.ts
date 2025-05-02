@@ -4,38 +4,23 @@ import { httpHeaders } from '@util/common'
 import { checkHost } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
-export const GET: APIRoute = async ({ url }) => {
-    const params = url.searchParams
-    const t = params.get('t') ?? '', p = params.get('p') ?? 1
-    let host = params.get('host')
+export const GET: APIRoute = async () => {
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
-        if (!host) {
-            host = await checkHost()
-        }
+        const host = await checkHost()
         if (host) {
-            const payload = {
-                type: t,
-                page: p,
-                pageSize: 12
-            }
             const data = await getJson<ProxyVideo.ApiJson>(
-                `https://${host}/api/f1l2/l1_aaaa`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                }
+                `https://${host}/api/s1y2/b1_f2_cccc`
             )
             return Response.json({
                 code: 0,
                 data: {
-                    ...parseProxyVideoData<ProxyVideo.PagedList>(data),
+                    ...parseProxyVideoData<{
+                        list: ProxyVideo.Meta[];
+                    }>(data),
                     host
                 },
                 msg: '成功'
