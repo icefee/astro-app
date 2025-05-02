@@ -5,27 +5,30 @@ import { withHost } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
-    const params = url.searchParams
-    const c = params.get('c')
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
     }
     try {
+        const params = url.searchParams
+        const c = params.get('c')
+        const p = params.get('p')
+        const page = p ? +p : 1
         const host = await withHost(params)
         const query = {
             type: c ?? params.get('t') ?? '',
-            page: params.get('p') ?? 1,
+            page,
             pageSize: 12
         }
         const data = await getJson<ProxyVideo.ApiJson>(
-            `https://${host}/api/${c ? 'b1q2/l1_cccc' : 'f1l2/l1_aaaa'}`,
+            `https://${host}/api/${c ? 'f1l2/l1_aaaa' : 'b1q2/l1_cccc'}`,
             {
                 method: 'POST',
                 headers: httpHeaders.json,
                 body: JSON.stringify(query)
             }
         )
+        console.log(data)
         return Response.json({
             code: 0,
             data: {
