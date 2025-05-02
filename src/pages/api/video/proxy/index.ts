@@ -2,11 +2,12 @@ import type { APIRoute } from 'astro'
 import { getText, getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
 import { isDev, userAgent } from '@util/env'
+import { parseProxyVideoData } from '@util/crypto'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
-const posterPrefix = 'https://v1imvvfc356.salantool.com'
+// const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
@@ -66,52 +67,36 @@ export async function getMetadata(host: string) {
     }
 }
 
-export function parseDataList(data: ProxyVideo.SearchVideo[]): ProxyVideo.VideoBase[] {
-    return data.map(
-        ({ litpic, ...rest }) => ({
-            ...rest,
-            poster: litpic
-        })
-    )
-}
-
 async function getLatest(host: string) {
     try {
-        const { data } = await getJson<{
-            data: [
-                {
-                    result1: ProxyVideo.TypedSearchVideo[];
-                },
-                {
-                    result2: ProxyVideo.TypedSearchVideo[];
-                }
-            ]
-        }>(`https://${host}/home`)
-        return parseDataList([
-            ...data[0].result1,
-            ...data[1].result2
-        ])
+        const data = await getJson<ProxyVideo.ApiJson>(
+            `https://${host}/api/t1j2/l1_dddd?type=index`
+        )
+        return parseProxyVideoData(data)
     }
     catch (err) {
         return null
     }
 }
 
-async function getSearch(host: string, title: string, page: number) {
+async function getSearch(host: string, text: string, page: number) {
     try {
-        const searchParams = new URLSearchParams({
-            key: title,
-            p: `${page}`
-        })
-        const { data } = await getJson<ProxyVideo.SearchResult>(
-            `https://${host}/api/searchs?${searchParams}`
+        const payload = {
+            text,
+            page,
+            pageSize: 12
+        }
+        const data = await getJson<ProxyVideo.ApiJson>(
+            `https://${host}/api/s1s2/l1_bbbb`,
+            {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
         )
-        return parseDataList(data).map(
-            ({ poster, ...rest }) => ({
-                ...rest,
-                poster: `${posterPrefix}/p2/${poster}.webp`
-            })
-        )
+        return parseProxyVideoData(data)
     }
     catch (err) {
         return null
@@ -129,18 +114,17 @@ export const GET: APIRoute = async ({ url }) => {
         const host = await checkHost()
         if (host) {
             const page = p ? Number(p) : 1
-            let list: ProxyVideo.VideoBase[] | null = null
+            let data = null
             if (s === '') {
-                list = await getLatest(host)
+                data = await getLatest(host)
             }
             else {
-                list = await getSearch(host, s, page)
+                data = await getSearch(host, s, page)
             }
-            list ??= []
             return Response.json({
                 code: 0,
                 data: {
-                    list,
+                    ...data,
                     host
                 },
                 msg: '成功'

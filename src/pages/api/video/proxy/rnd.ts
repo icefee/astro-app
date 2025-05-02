@@ -1,10 +1,10 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { checkHost, parseDataList } from './'
+import { checkHost } from './'
+import { parseProxyVideoData } from '@util/crypto'
 
-export const GET: APIRoute = async ({ url }) => {
-    const params = url.searchParams
+export const GET: APIRoute = async () => {
     const headers = {
         ...httpHeaders.json,
         ...httpHeaders.cors
@@ -12,13 +12,13 @@ export const GET: APIRoute = async ({ url }) => {
     try {
         const host = await checkHost()
         if (host) {
-            const { data } = await getJson<{
-                data: ProxyVideo.SearchVideo[];
-            }>(`https://${host}/rdlist`)
+            const data = await getJson<ProxyVideo.ApiJson>(
+                `https://${host}/api/t1j2/l1_dddd`
+            )
             return Response.json({
                 code: 0,
                 data: {
-                    list: parseDataList(data),
+                    ...parseProxyVideoData(data),
                     host
                 },
                 msg: '成功'

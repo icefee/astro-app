@@ -50,10 +50,30 @@ declare type ApiJsonType<T = unknown> = ApiJsonSuccess<T> | ApiJsonFail;
 
 declare namespace ProxyVideo {
 
+    export interface ApiJson {
+        code: number;
+        data: string;
+        iv: string;
+        message: string;
+    }
+
+    export interface Meta {
+        name: string;
+        value: string;
+    }
+
     export interface SearchVideo {
         id: number;
+        source: number;
+        date_created: string;
         title: string;
         litpic: string;
+        keywords: string;
+        typename: Meta[];
+        playurl: string;
+        downloadurl: string;
+        tag: Meta[];
+        body: string;
     }
 
     export interface TypedSearchVideo extends SearchVideo {

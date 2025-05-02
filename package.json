@@ -10,11 +10,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.5.1",
+    "@astrojs/cloudflare": "^12.5.2",
     "@astrojs/node": "^9.2.1",
-    "astro": "^5.7.5"
+    "astro": "^5.7.10",
+    "crypto-js": "^4.2.0"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20"
   },
   "license": "MIT"

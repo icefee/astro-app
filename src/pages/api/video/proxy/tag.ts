@@ -1,7 +1,8 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { checkHost, parseDataList } from './'
+import { checkHost } from './'
+import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
@@ -13,13 +14,25 @@ export const GET: APIRoute = async ({ url }) => {
     try {
         const host = await checkHost()
         if (host) {
-            const { data } = await getJson<{
-                data: ProxyVideo.TypedSearchVideo[];
-            }>(`https://${host}/list_tags/${t}/${p}`)
+            const payload = {
+                type: t,
+                page: p,
+                pageSize: 12
+            }
+            const data = await getJson<ProxyVideo.ApiJson>(
+                `https://${host}/api/f1l2/l1_aaaa`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                }
+            )
             return Response.json({
                 code: 0,
                 data: {
-                    list: parseDataList(data),
+                    ...parseProxyVideoData(data),
                     host
                 },
                 msg: '成功'
