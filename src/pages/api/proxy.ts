@@ -66,6 +66,7 @@ export const POST: APIRoute = async ({ url, request }) => {
     if (target) {
         const headers = new Headers(request.headers)
         headers.delete('host')
+        headers.set('origin', new URL(target).origin)
         headers.set('user-agent', userAgent)
         const response = await unsafe_fetch(target, {
             method: 'POST',
