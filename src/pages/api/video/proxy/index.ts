@@ -1,8 +1,9 @@
 import type { APIRoute } from 'astro'
-import { getText, getJson } from '@adaptors/common'
+import { getResponse, getText, getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
 import { isDev, userAgent } from '@util/env'
 import { parseProxyVideoData } from '@util/crypto'
+import { utf8Tobase64 } from '@util/base64'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
@@ -11,10 +12,12 @@ const checkUrl = 'https://8x8x.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
+const headers = {
+    'user-agent': userAgent
+} satisfies HeadersInit
+
 export const getHtml = (url: string) => getText(url, {
-    headers: {
-        'user-agent': userAgent
-    }
+    headers
 })
 
 async function getMatch(url: string, reg: RegExp) {
@@ -45,13 +48,38 @@ async function checkHostTemporary() {
 }
 */
 
+async function getRedirectUrl(url: string): Promise<string> {
+    console.log('Get host url from: %s', url)
+    const response = await getResponse(url, {
+        redirect: 'manual',
+        headers
+    })
+    if (response.status === 302) {
+        const location = response.headers.get('location')!
+        console.log('302 found, redirect to: %s', location)
+        return getRedirectUrl(location)
+    }
+    return new URL(url).host
+}
+
 async function checkHost() {
     const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
+    console.log('Start check host...')
     const matchBlock = await getMatch(
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
         new RegExp(`最新地址一：<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
     )
-    return matchBlock?.match(urlMatchReg)?.[0] ?? null
+    const host = matchBlock?.match(urlMatchReg)?.[0]
+    if (host) {
+        console.log('Check host: %s', host)
+        const url = `https://${host}/`
+        const html = await getHtml(url)
+        if (html.match(new RegExp('id="redirectLink"', 'im'))) {
+            return getRedirectUrl(`${url}IndexPage/indexpage.html?u=${utf8Tobase64(url)}`)
+        }
+        return host
+    }
+    return null
 }
 
 export async function withHost(params: URLSearchParams) {

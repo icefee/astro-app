@@ -1,4 +1,3 @@
-
 function bufferSupported() {
     return 'Buffer' in globalThis;
 }
