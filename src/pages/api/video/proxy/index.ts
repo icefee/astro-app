@@ -88,7 +88,7 @@ export async function withHost(params: URLSearchParams) {
         host = await checkHost()
     }
     if (host) {
-        return host
+        return `www.${host}`
     }
     throw new Error('Invalid host')
 }
