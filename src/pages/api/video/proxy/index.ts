@@ -23,9 +23,9 @@ export const getHtml = (url: string) => getText(url, {
 async function getMatch(url: string, reg: RegExp) {
     try {
         const html = await getHtml(url)
-        const matchedResult = html.match(reg)
-        if (matchedResult) {
-            return matchedResult[0]
+        const matches = html.match(reg)
+        if (matches) {
+            return matches[0]
         }
         throw new Error('Get match error')
     }
@@ -71,13 +71,14 @@ async function checkHost() {
     )
     const host = matchBlock?.match(urlMatchReg)?.[0]
     if (host) {
-        console.log('Check host: %s', host)
-        const url = `https://${host}/`
+        const hostUrl = `www.${host}`
+        console.log('Check host: %s', hostUrl)
+        const url = `https://${hostUrl}/`
         const html = await getHtml(url)
         if (html.match(new RegExp('id="redirectLink"', 'im'))) {
             return getRedirectUrl(`${url}IndexPage/indexpage.html?u=${utf8Tobase64(url)}`)
         }
-        return host
+        return hostUrl
     }
     return null
 }
@@ -88,7 +89,7 @@ export async function withHost(params: URLSearchParams) {
         host = await checkHost()
     }
     if (host) {
-        return `www.${host}`
+        return host
     }
     throw new Error('Invalid host')
 }
