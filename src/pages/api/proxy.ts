@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro'
 import { httpHeaders, unsafe_fetch } from '@util/common'
 import { userAgent } from '@util/env'
-import { hrtime } from 'process';
 
 const inheritedHeaders: Array<{
     key: string;
