@@ -44,7 +44,7 @@ export const GET: APIRoute = async ({ url, request }) => {
         })
         const headers = new Headers(cors ? httpHeaders.cors : undefined)
         for (const { key, defaultValue } of inheritedHeaders) {
-            const value = originHeaders.get(key) ?? defaultValue;
+            const value = originHeaders.get(key) ?? defaultValue
             if (value) {
                 headers.append(key, value)
             }
@@ -66,10 +66,11 @@ export const POST: APIRoute = async ({ url, request }) => {
         const headers = new Headers(request.headers)
         headers.delete('host')
         headers.set('user-agent', userAgent)
+        const body = await request.text()
         const response = await unsafe_fetch(target, {
             method: 'POST',
             headers,
-            body: await request.text()
+            body
         })
         const responseHeaders = new Headers(response.headers)
         responseHeaders.delete('content-encoding')

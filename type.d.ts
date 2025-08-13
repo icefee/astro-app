@@ -57,6 +57,12 @@ declare namespace ProxyVideo {
         message: string;
     }
 
+    export interface ApiDataType<T> extends Pick<DataType, 'code' | 'message'> {
+        code: number;
+        data: T;
+        message: string;
+    }
+
     export interface Meta {
         name: string;
         value: string;

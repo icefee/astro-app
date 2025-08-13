@@ -1,3 +1,5 @@
+import { userAgent } from './env'
+
 export const unsafe_fetch: typeof fetch = (...args) => {
     /* @ts-ignore */
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -19,5 +21,9 @@ export namespace httpHeaders {
         'access-control-allow-methods': 'GET,OPTIONS',
         'access-control-allow-headers': 'Range,Cache-Control',
         'access-control-expose-headers': 'Content-Length,Content-Range,Content-Disposition'
+    }
+
+    export const client = {
+        'user-agent': userAgent
     }
 }

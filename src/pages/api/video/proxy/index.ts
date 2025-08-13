@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro'
 import { getResponse, getText, getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { isDev, userAgent } from '@util/env'
+import { isDev } from '@util/env'
 import { parseProxyVideoData } from '@util/crypto'
-import { utf8Tobase64 } from '@util/base64'
+// import { utf8Tobase64 } from '@util/base64'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'
@@ -12,12 +12,8 @@ const checkUrl = 'https://8x8x.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
-const headers = {
-    'user-agent': userAgent
-} satisfies HeadersInit
-
 export const getHtml = (url: string) => getText(url, {
-    headers
+    headers: httpHeaders.client
 })
 
 async function getMatch(url: string, reg: RegExp) {
@@ -52,7 +48,7 @@ async function getRedirectUrl(url: string): Promise<string> {
     console.log('Get host url from: %s', url)
     const response = await getResponse(url, {
         redirect: 'manual',
-        headers
+        headers: httpHeaders.client
     })
     if (response.status === 302) {
         const location = response.headers.get('location')!
@@ -63,24 +59,14 @@ async function getRedirectUrl(url: string): Promise<string> {
 }
 
 async function checkHost() {
-    const urlMatchReg = /[a-z\d]{3,}\.[a-z]{2,4}/g
     console.log('Start check host...')
+    const urlMatchReg = /([a-z\d]{3,}\.)+[a-z]{2,4}/g
     const matchBlock = await getMatch(
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
         new RegExp(`最新地址一：<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
     )
     const host = matchBlock?.match(urlMatchReg)?.[0]
-    if (host) {
-        const hostUrl = `www.${host}`
-        console.log('Check host: %s', hostUrl)
-        const url = `https://${hostUrl}/`
-        const html = await getHtml(url)
-        if (html.match(new RegExp('id="redirectLink"', 'im'))) {
-            return getRedirectUrl(`${url}IndexPage/indexpage.html?u=${utf8Tobase64(url)}`)
-        }
-        return hostUrl
-    }
-    return null
+    return host ? host : null
 }
 
 export async function withHost(params: URLSearchParams) {
@@ -88,6 +74,7 @@ export async function withHost(params: URLSearchParams) {
     if (!host) {
         host = await checkHost()
     }
+    console.log("host = %s", host)
     if (host) {
         return host
     }

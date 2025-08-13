@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
 import { withHost } from './'
-import { parseProxyVideoData } from '@util/crypto'
+// import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
     const headers = {
@@ -11,15 +11,21 @@ export const GET: APIRoute = async ({ url }) => {
     }
     try {
         const host = await withHost(url.searchParams)
-        const data = await getJson<ProxyVideo.ApiJson>(
-            `https://${host}/api/s1y2/b1_f2_cccc`
+        const { code, data, message } = await getJson<ProxyVideo.ApiDataType<{
+            list: ProxyVideo.Meta[];
+        }>>(
+            `https://${host}/api/s1y2/b1_f2_cccc`,
+            {
+                headers: httpHeaders.client
+            }
         )
+        if (code !== 200) {
+            throw new Error(message)
+        }
         return Response.json({
             code: 0,
             data: {
-                ...parseProxyVideoData<{
-                    list: ProxyVideo.Meta[];
-                }>(data),
+                ...data,
                 host
             },
             msg: '成功'

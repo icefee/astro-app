@@ -1,5 +1,6 @@
 import type { Adaptor } from '.'
 import { isTextNotNull } from '@util/string'
+import { httpHeaders } from '@util/common'
 export { isTextNotNull, escapeSymbols } from '@util/string'
 
 export const defaultPoster = `/poster.jpg`
@@ -9,15 +10,14 @@ export function getResponse(...args: Parameters<typeof fetch>): Promise<Response
 }
 
 export async function getText(...args: Parameters<typeof fetch>): Promise<string> {
-    return getResponse(...args).then(
-        response => response.text()
-    )
+    const response = await getResponse(...args)
+    return response.text()
 }
 
 export async function getJson<T = any>(...args: Parameters<typeof fetch>): Promise<T> {
-    return getResponse(...args).then(
-        response => response.json() as Promise<T>
-    )
+    const response = await getResponse(...args)
+    console.log(response, ...args)
+    return response.json() as Promise<T>
 }
 
 export async function getTextWithTimeout(...args: Parameters<typeof fetch>): Promise<string | null> {
@@ -27,12 +27,10 @@ export async function getTextWithTimeout(...args: Parameters<typeof fetch>): Pro
     try {
         const text = await getText(url, {
             ...init,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.121 Safari/537.36'
-            },
+            headers: httpHeaders.client,
             signal: abortController.signal
         })
-        return text;
+        return text
     }
     catch (err) {
         return null
