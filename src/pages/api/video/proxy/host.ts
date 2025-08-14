@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro'
 import { httpHeaders } from '@util/common'
+import { withHost } from './'
 
-export const GET: APIRoute = async ({ url }) => {
-    const params = url.searchParams
-    const host = params.get('host')
+export const GET: APIRoute = async () => {
+    const host = await withHost()
     return new Response(JSON.stringify({
         code: 0,
-        data: `https://${host}/api/p1/x1_q2_aaaa`,
+        data: host,
         msg: '成功'
     }), {
         headers: {
