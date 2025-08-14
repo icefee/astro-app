@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro'
-import { getText, getJson } from '@adaptors/common'
+import { getText } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
 import { isDev } from '@util/env'
-import { parseProxyVideoData } from '@util/crypto'
 // import { utf8Tobase64 } from '@util/base64'
 import { Api } from '@util/config'
 
@@ -52,22 +51,6 @@ export async function withHost(params?: URLSearchParams) {
     throw new Error('Invalid host')
 }
 
-async function getLatest(host: string) {
-    try {
-        const data = await getJson<ProxyVideo.ApiJson>(
-            `https://${host}/api/s1y2/f1_l2_l3_bbbb`
-        )
-        return {
-            list: parseProxyVideoData<{
-                list: ProxyVideo.SearchVideo[];
-            } & ProxyVideo.Meta>(data)
-        }
-    }
-    catch (err) {
-        return null
-    }
-}
-
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const host = params.get('host')
@@ -75,5 +58,11 @@ export const GET: APIRoute = async ({ url }) => {
     if (params.get('s')) {
         path = 's1s2/l1_bbbb'
     }
-    return Response.redirect(`https://${host}/api/${path}`)
+    return new Response(null, {
+        status: 302,
+        headers: {
+            ...httpHeaders.cors,
+            location: `https://${host}/api/${path}`
+        }
+    })
 }
