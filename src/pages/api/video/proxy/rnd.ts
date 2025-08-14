@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { withHost } from './'
+import { host } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
@@ -11,7 +11,6 @@ export const GET: APIRoute = async ({ url }) => {
         ...httpHeaders.cors
     }
     try {
-        const host = await withHost(params)
         let apiUrl = `https://${host}/api/t1j2/l1_dddd`
         if (params.get('type')) {
             apiUrl += '?type=index'
@@ -20,8 +19,7 @@ export const GET: APIRoute = async ({ url }) => {
         return Response.json({
             code: 0,
             data: {
-                list: parseProxyVideoData<ProxyVideo.SearchVideo[]>(data),
-                host
+                list: parseProxyVideoData<ProxyVideo.SearchVideo[]>(data)
             },
             msg: '成功'
         }, {

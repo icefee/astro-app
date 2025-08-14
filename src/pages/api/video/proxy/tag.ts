@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { withHost } from './'
+import { host } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
@@ -14,7 +14,6 @@ export const GET: APIRoute = async ({ url }) => {
         const c = params.get('c')
         const p = params.get('p')
         const page = p ? +p : 1
-        const host = await withHost(params)
         const query = {
             type: c ?? params.get('t') ?? '',
             page,
@@ -30,10 +29,7 @@ export const GET: APIRoute = async ({ url }) => {
         )
         return Response.json({
             code: 0,
-            data: {
-                ...parseProxyVideoData<ProxyVideo.PagedList>(data),
-                host
-            },
+            data: parseProxyVideoData<ProxyVideo.PagedList>(data),
             msg: '成功'
         }, {
             headers

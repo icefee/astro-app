@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { withHost } from './'
+import { host } from './'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const GET: APIRoute = async ({ url }) => {
@@ -11,7 +11,6 @@ export const GET: APIRoute = async ({ url }) => {
         ...httpHeaders.cors
     }
     try {
-        const host = await withHost(params)
         const query = {
             id: +params.get('id')!
         }
