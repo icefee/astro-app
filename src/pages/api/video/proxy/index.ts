@@ -1,9 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getText, getJson } from '@adaptors/common'
 import { httpHeaders } from '@util/common'
-import { isDev } from '@util/env'
 import { parseProxyVideoData } from '@util/crypto'
-import { Api } from '@util/config'
 
 export const host = '88xx.info'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
@@ -27,7 +25,6 @@ async function getLatest() {
         }
     }
     catch (err) {
-        console.log(err)
         return null
     }
 }
@@ -37,7 +34,7 @@ async function getSearch(text: string, page: number) {
         const payload = {
             text,
             page,
-            pageSize: 12
+            pageSize: 50
         }
         const data = await getJson<ProxyVideo.ApiJson>(
             `https://${host}/api/s1s2/l1_bbbb`,
