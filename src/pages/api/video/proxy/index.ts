@@ -4,6 +4,7 @@ import { httpHeaders } from '@util/common'
 import { parseProxyVideoData } from '@util/crypto'
 
 export const host = '88xx.info'
+export const pageSize = 50
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
@@ -34,7 +35,7 @@ async function getSearch(text: string, page: number) {
         const payload = {
             text,
             page,
-            pageSize: 50
+            pageSize
         }
         const data = await getJson<ProxyVideo.ApiJson>(
             `https://${host}/api/s1s2/l1_bbbb`,
