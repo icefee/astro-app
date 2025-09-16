@@ -16,7 +16,6 @@ export async function getText(...args: Parameters<typeof fetch>): Promise<string
 
 export async function getJson<T = any>(...args: Parameters<typeof fetch>): Promise<T> {
     const response = await getResponse(...args)
-    console.log(response, ...args)
     return response.json() as Promise<T>
 }
 

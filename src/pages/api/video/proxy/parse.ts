@@ -1,16 +1,6 @@
 import type { APIRoute } from 'astro'
-import { httpHeaders } from '@util/common'
-import { host } from '.'
+import { host, proxyResponse } from '.'
 
-export const GET: APIRoute = async () => {
-    return new Response(JSON.stringify({
-        code: 0,
-        data: `https://${host}/api/p1/x1_q2_aaaa`,
-        msg: '成功'
-    }), {
-        headers: {
-            ...httpHeaders.json,
-            ...httpHeaders.cors
-        }
-    })
+export const GET: APIRoute = () => {
+    return proxyResponse(`https://${host}/api/p1/x1_q2_aaaa`)
 }
