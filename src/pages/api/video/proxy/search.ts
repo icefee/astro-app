@@ -7,6 +7,9 @@ export const POST: APIRoute = async ({ request }) => {
     return proxyResponse(`https://${host}/api/s1s2/l1_bbbb`, {
         method: 'post',
         body: JSON.stringify(body),
-        headers: httpHeaders.json
+        headers: {
+            ...httpHeaders.json,
+            ...httpHeaders.cors
+        }
     })
 }
