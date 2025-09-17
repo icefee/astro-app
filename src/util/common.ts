@@ -19,8 +19,8 @@ export namespace httpHeaders {
     export const cors = {
         'access-control-allow-origin': '*',
         'access-control-allow-methods': 'GET,OPTIONS',
-        'access-control-allow-headers': 'Range,Cache-Control',
-        'access-control-expose-headers': 'Content-Length,Content-Range,Content-Disposition'
+        'access-control-allow-headers': 'range,cache-control,content-type',
+        'access-control-expose-headers': 'content-length,content-range,content-disposition'
     }
 
     export const client = {
