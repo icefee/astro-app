@@ -17,6 +17,12 @@ export const proxyResponse = async (...args: Parameters<typeof getResponse>) => 
     })
 }
 
+export const OPTIONS: APIRoute = () => new Response('ok', {
+    status: 200,
+    statusText: 'ok',
+    headers: httpHeaders.cors
+})
+
 export const GET: APIRoute = async ({ url }) => {
     let path = 's1y2/f1_l2_l3_bbbb'
     if (url.searchParams.get('s')) {

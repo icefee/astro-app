@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
 import { host, proxyResponse } from '.'
-import { httpHeaders } from '@util/common'
+
+export { OPTIONS } from '.'
 
 export const POST: APIRoute = async ({ url, request }) => {
     const category = url.searchParams.get('c')
@@ -9,9 +10,6 @@ export const POST: APIRoute = async ({ url, request }) => {
     return proxyResponse(`https://${host}/api/${api}`, {
         method: 'post',
         body: JSON.stringify(body),
-        headers: {
-            ...httpHeaders.json,
-            ...httpHeaders.cors
-        }
+        headers: request.headers
     })
 }
