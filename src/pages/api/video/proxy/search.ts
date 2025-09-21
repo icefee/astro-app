@@ -5,9 +5,9 @@ export { OPTIONS } from '.'
 
 export const POST: APIRoute = async ({ request }) => {
     const body = await request.json()
-    return proxyResponse(`https://${host}/api/p1/x1_q2_aaaa`, {
+    return proxyResponse(`https://${host}/api/s1s2/l1_bbbb`, {
         method: 'post',
-        headers: request.headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        headers: request.headers
     })
 }
