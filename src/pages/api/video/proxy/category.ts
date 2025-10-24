@@ -7,11 +7,11 @@ export const GET: APIRoute = async ({ url }) => {
     const host = params.get('host')!
     const t = params.get('t')
     return proxyRequest(
-        getApiUrl(host, 'tags_posts'),
+        getApiUrl(host, 'category_posts'),
         {
             method: 'post',
             body: JSON.stringify({
-                type: t,
+                typename: t,
                 ...getPageParams(params)
             })
         }

@@ -50,14 +50,7 @@ declare type ApiJsonType<T = unknown> = ApiJsonSuccess<T> | ApiJsonFail;
 
 declare namespace ProxyVideo {
 
-    export interface ApiJson {
-        code: number;
-        data: string;
-        iv: string;
-        message: string;
-    }
-
-    export interface ApiDataType<T> extends Pick<DataType, 'code' | 'message'> {
+    export interface ApiJson<T> {
         code: number;
         data: T;
         message: string;
@@ -72,20 +65,18 @@ declare namespace ProxyVideo {
     export interface SearchVideo {
         id: number;
         source: number;
-        date_created: string;
         title: string;
         litpic: string;
         keywords: string;
         typename: Meta[];
         playurl: string;
         downloadurl: string;
-        tag: Meta[];
-        body: string;
+        tags: Meta[] | null;
     }
 
     export interface PagedList {
         list: SearchVideo[];
-        count: number;
+        current_count: number;
     }
 
     export interface TypedSearchVideo extends SearchVideo {

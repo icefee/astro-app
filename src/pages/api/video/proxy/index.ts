@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
-import { getText } from '@adaptors/common'
-import { httpHeaders } from '@util/common'
+import { getText, getJson, proxyRequest } from '@adaptors/common'
+import { httpHeaders, } from '@util/common'
 import { isDev } from '@util/env'
 import { utf82utf16 } from '@util/parser'
 import { Api } from '@util/config'
@@ -10,6 +10,16 @@ const checkUrl = 'https://8x8x.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
+
+export const getApiUrl = (host: string, path: string) => `https://${host}/api/${path}`
+
+export const getPageParams = (params: URLSearchParams) => {
+    const p = params.get('p')
+    return {
+        page: p ? +p : 1,
+        page_size: 60
+    }
+}
 
 export const getHtml = (url: string) => getText(url, {
     headers: httpHeaders.client
@@ -71,18 +81,23 @@ export async function withHost(params?: URLSearchParams) {
     throw new Error('Invalid host')
 }
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = ({ url }) => {
     const params = url.searchParams
-    const host = params.get('host')
-    let path = 's1y2/f1_l2_l3_bbbb'
-    if (params.get('s')) {
-        path = 's1s2/l1_bbbb'
+    const host = params.get('host')!
+    const s = params.get('s')
+    if (s) {
+        return proxyRequest(
+            getApiUrl(host, 'searchlist'),
+            {
+                method: 'post',
+                body: JSON.stringify({
+                    keyword: s,
+                    ...getPageParams(params)
+                })
+            }
+        )
     }
-    return new Response(null, {
-        status: 302,
-        headers: {
-            ...httpHeaders.cors,
-            location: `https://${host}/api/${path}`
-        }
-    })
+    return proxyRequest(
+        getApiUrl(host, 'indexlist')
+    )
 }

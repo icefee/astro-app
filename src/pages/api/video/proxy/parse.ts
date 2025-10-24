@@ -1,17 +1,18 @@
 import type { APIRoute } from 'astro'
-import { httpHeaders } from '@util/common'
+import { proxyRequest } from '@adaptors/common'
+import { getApiUrl } from '.'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
-    const host = params.get('host')
-    return new Response(JSON.stringify({
-        code: 0,
-        data: `https://${host}/api/p1/x1_q2_aaaa`,
-        msg: '成功'
-    }), {
-        headers: {
-            ...httpHeaders.json,
-            ...httpHeaders.cors
+    const host = params.get('host')!
+    const id = params.get('id')!
+    return proxyRequest(
+        getApiUrl(host, 'source_data'),
+        {
+            method: 'post',
+            body: JSON.stringify({
+                id: +id
+            })
         }
-    })
+    )
 }

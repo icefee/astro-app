@@ -38,6 +38,17 @@ export async function getTextWithTimeout(...args: Parameters<typeof fetch>): Pro
     }
 }
 
+export async function proxyRequest(...args: Parameters<typeof fetch>) {
+    const response = await getResponse(...args)
+    return new Response(await response.blob(), {
+        status: 200,
+        headers: {
+            ...response.headers,
+            ...httpHeaders.cors,
+        }
+    })
+}
+
 export function parseId(id: string) {
     const key = id[0] as Adaptor;
     return {
