@@ -11,7 +11,7 @@ const checkUrl = 'https://8x8x.com'
 
 export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
-export const getApiUrl = (host: string, path: string) => `https://${host}/api/${path}`
+export const getApiUrl = (host: string, path: string) => `https://www.${host}/api/${path}`
 
 export const getPageParams = (params: URLSearchParams) => {
     const p = params.get('p')
