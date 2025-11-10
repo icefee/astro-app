@@ -1,7 +1,7 @@
 {
   "name": "astro-app",
   "type": "module",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,9 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.2",
-    "@astrojs/node": "^9.3.3",
-    "astro": "^5.12.8",
+    "@astrojs/cloudflare": "^12.6.10",
+    "@astrojs/node": "^9.5.0",
+    "astro": "^5.15.4",
     "crypto-js": "^4.2.0"
   },
   "devDependencies": {

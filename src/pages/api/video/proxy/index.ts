@@ -1,32 +1,39 @@
 import type { APIRoute } from 'astro'
-import { getResponse } from '@adaptors/common'
-import { httpHeaders } from '@util/common'
+import { getText, proxyRequest } from '@adaptors/common'
+import { httpHeaders, } from '@util/common'
 
 export const host = '88xx.info'
 
-export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
+export const getApiUrl = (path: string) => `https://${host}/api/${path}`
 
-export const proxyResponse = async (...args: Parameters<typeof getResponse>) => {
-    const response = await getResponse(...args)
-    return new Response(await response.blob(), {
-        status: 200,
-        headers: {
-            ...httpHeaders.cors,
-            ...httpHeaders.json
-        }
-    })
+export const getPageParams = (params: URLSearchParams) => {
+    const p = params.get('p')
+    return {
+        page: p ? +p : 1,
+        page_size: 60
+    }
 }
 
-export const OPTIONS: APIRoute = () => new Response('ok', {
-    status: 200,
-    statusText: 'ok',
-    headers: httpHeaders.cors
+export const getHtml = (url: string) => getText(url, {
+    headers: httpHeaders.client
 })
 
-export const GET: APIRoute = async ({ url }) => {
-    let path = 's1y2/f1_l2_l3_bbbb'
-    if (url.searchParams.get('s')) {
-        path = 's1s2/l1_bbbb'
+export const GET: APIRoute = ({ url }) => {
+    const params = url.searchParams
+    const s = params.get('s')
+    if (s) {
+        return proxyRequest(
+            getApiUrl('searchlist'),
+            {
+                method: 'post',
+                body: JSON.stringify({
+                    keyword: s,
+                    ...getPageParams(params)
+                })
+            }
+        )
     }
-    return proxyResponse(`https://${host}/api/${path}`)
+    return proxyRequest(
+        getApiUrl('indexlist')
+    )
 }

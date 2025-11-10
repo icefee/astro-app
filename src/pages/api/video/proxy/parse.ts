@@ -1,13 +1,16 @@
 import type { APIRoute } from 'astro'
-import { host, proxyResponse } from '.'
+import { proxyRequest } from '@adaptors/common'
+import { getApiUrl } from '.'
 
-export { OPTIONS } from '.'
-
-export const POST: APIRoute = async ({ request }) => {
-    const body = await request.json()
-    return proxyResponse(`https://${host}/api/p1/x1_q2_aaaa`, {
-        method: 'post',
-        headers: request.headers,
-        body: JSON.stringify(body)
-    })
+export const GET: APIRoute = ({ url }) => {
+    const id = url.searchParams.get('id')
+    return id ? proxyRequest(
+        getApiUrl('source_data'),
+        {
+            method: 'post',
+            body: JSON.stringify({
+                id: +id
+            })
+        }
+    ) : new Response('invalid query param: id')
 }

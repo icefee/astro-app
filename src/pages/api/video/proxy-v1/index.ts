@@ -8,8 +8,6 @@ export const pageSize = 50
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
-export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
-
 export const getHtml = (url: string) => getText(url, {
     headers: httpHeaders.client
 })

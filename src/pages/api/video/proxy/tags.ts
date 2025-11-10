@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro'
-import { host, proxyResponse } from '.'
+import { proxyRequest } from '@adaptors/.'
+import { getApiUrl } from '.'
 
-export const GET: APIRoute = () => {
-    return proxyResponse(`https://${host}/api/s1y2/b1_f2_cccc`)
-}
+export const GET: APIRoute = () => proxyRequest(getApiUrl('category'))
