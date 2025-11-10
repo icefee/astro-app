@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { getText, getJson, proxyRequest } from '@adaptors/common'
+import { getText, proxyRequest } from '@adaptors/common'
 import { httpHeaders, } from '@util/common'
 import { isDev } from '@util/env'
 import { utf82utf16 } from '@util/parser'
@@ -8,8 +8,6 @@ import { Api } from '@util/config'
 const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
-
-export const posterMatchReg = new RegExp('https://[\\w-./@%?:]+?\.webp', 'g')
 
 export const getApiUrl = (host: string, path: string) => `https://www.${host}/api/${path}`
 
@@ -47,6 +45,10 @@ async function getMatch(url: string, reg: RegExp): Promise<Record<'source' | 're
         }
     }
 }
+
+export const invalidQueryRequest = (key: string) => new Response(`invalid query: ${key}`, {
+    status: 400
+})
 
 async function checkHost() {
     console.log('Start check host...')

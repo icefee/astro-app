@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro'
 import { proxyRequest } from '@adaptors/common'
-import { getApiUrl, getPageParams } from '.'
+import { getApiUrl, getPageParams, invalidQueryRequest } from '.'
 
 export const GET: APIRoute = ({ url }) => {
     const params = url.searchParams
     const host = params.get('host')!
     const c = params.get('c')
-    return proxyRequest(
+    return c ? proxyRequest(
         getApiUrl(host, 'category_posts'),
         {
             method: 'post',
@@ -15,5 +15,5 @@ export const GET: APIRoute = ({ url }) => {
                 ...getPageParams(params)
             })
         }
-    )
+    ) : invalidQueryRequest('c')
 }
