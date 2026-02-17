@@ -4,5 +4,5 @@ import { getApiUrl } from '.'
 
 export const GET: APIRoute = ({ url }) => {
     const host = url.searchParams.get('host')!
-    return proxyRequest(getApiUrl(host, 'category'))
+    return proxyRequest(getApiUrl(host, '/json/index/ct.json'))
 }

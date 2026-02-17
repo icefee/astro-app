@@ -7,12 +7,6 @@ export const GET: APIRoute = ({ url }) => {
     const host = params.get('host')!
     const id = params.get('id')
     return id ? proxyRequest(
-        getApiUrl(host, 'source_data'),
-        {
-            method: 'post',
-            body: JSON.stringify({
-                id: +id
-            })
-        }
+        getApiUrl(host, `/json/detail/detail_${id}.json`)
     ) : invalidQueryRequest('id')
 }

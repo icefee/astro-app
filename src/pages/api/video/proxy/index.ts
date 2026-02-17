@@ -9,7 +9,7 @@ const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
-export const getApiUrl = (host: string, path: string) => `https://www.${host}/api/${path}`
+export const getApiUrl = (host: string, path: string) => 'https://' + host + path
 
 export const getPageParams = (params: URLSearchParams) => {
     const p = params.get('p')
@@ -88,18 +88,16 @@ export const GET: APIRoute = ({ url }) => {
     const host = params.get('host')!
     const s = params.get('s')
     if (s) {
+        const { page } = getPageParams(params)
+        const searchParams = new URLSearchParams({
+            q: s,
+            page: `${page}`
+        })
         return proxyRequest(
-            getApiUrl(host, 'searchlist'),
-            {
-                method: 'post',
-                body: JSON.stringify({
-                    keyword: s,
-                    ...getPageParams(params)
-                })
-            }
+            getApiUrl(host, `/api/searchvideo?${searchParams}`)
         )
     }
     return proxyRequest(
-        getApiUrl(host, 'indexlist')
+        getApiUrl(host, '/json/homepage/homepage_1049.json')
     )
 }
