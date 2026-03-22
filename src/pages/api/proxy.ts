@@ -34,11 +34,16 @@ const inheritedHeaders: Array<{
 
 export const GET: APIRoute = async ({ url, request }) => {
     const params = url.searchParams
-    const target = params.get('url'), cors = params.get('cors') === '1'
+    const target = params.get('url'),
+        cors = params.get('cors') === '1',
+        referer = params.get('referer')
     if (target) {
         const requestHeaders = new Headers(request.headers)
         requestHeaders.delete('host')
         requestHeaders.set('user-agent', userAgent)
+        if (referer) {
+            requestHeaders.set('referer', referer === 'inherit' ? url.origin : referer)
+        }
         const { body, status, headers: originHeaders } = await unsafe_fetch(target, {
             headers: requestHeaders
         })
