@@ -1,4 +1,4 @@
-import { getTextWithTimeout, getResponse, parseLrcText, escapeSymbols } from '.'
+import { getTextWithTimeout, getJson, parseLrcText, escapeSymbols } from '.'
 import { timeFormatter } from '@util/date'
 import { userAgent } from '@util/env'
 
@@ -81,7 +81,7 @@ interface ParsedSongType {
 
 async function parseSong(id: string) {
     try {
-        const result = await getResponse(`${baseUrl}/js/play.php`, {
+        const result = await getJson<ParsedSongType>(`${baseUrl}/js/play.php`, {
             method: 'POST',
             body: new URLSearchParams({
                 id,
@@ -92,9 +92,7 @@ async function parseSong(id: string) {
                 'referer': `${baseUrl}/song/${id}.html`,
                 'user-agent': userAgent
             }
-        }).then<ParsedSongType>(
-            response => response.json()
-        )
+        })
         return result
     }
     catch (err) {

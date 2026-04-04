@@ -2,6 +2,7 @@ import * as g from './gequbao'
 import * as z from './zz123'
 import * as t from './2t58'
 
+export * as cheerio from 'cheerio'
 export * from './common'
 
 export type Adaptor = typeof g.key | typeof z.key | typeof t.key
