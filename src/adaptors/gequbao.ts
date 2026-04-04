@@ -35,7 +35,7 @@ export async function getMusicSearch(s: string): Promise<SearchMusic[]> {
     }
 }
 
-async function getPageSource(id: string) {
+function getPageSource(id: string) {
     return getTextWithTimeout(`${baseUrl}/music/${id}`)
 }
 
