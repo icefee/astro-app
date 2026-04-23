@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { getText, proxyRequest } from '@adaptors/common'
+import { getText, proxyRequest, cheerio, getJson } from '@adaptors/.'
 import { httpHeaders, } from '@util/common'
 import { isDev } from '@util/env'
 import { utf82utf16 } from '@util/parser'
@@ -9,7 +9,7 @@ const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
-export const getApiUrl = (host: string, path: string) => 'https://' + host + path
+export const getApiUrl = (host: string, path: string = '') => 'https://' + host + path
 
 export const getPageParams = (params: URLSearchParams) => {
     const p = params.get('p')
@@ -50,6 +50,67 @@ export const invalidQueryRequest = (key: string) => new Response(`invalid query:
     status: 400
 })
 
+export const createDataPayload = <T>(data: T) => new Response(JSON.stringify({
+    code: 0,
+    data,
+    msg: '成功'
+}), {
+    headers: {
+        ...httpHeaders.json,
+        ...httpHeaders.cors
+    }
+})
+
+export const getDataList = (
+    $: cheerio.CheerioAPI,
+    selector: string | ReturnType<typeof $>
+) => {
+    return (typeof selector === 'string' ? $(selector) : selector).map(
+        function () {
+            const id = +$(this).attr('href')!.match(/(\d+)/)![0]
+            const img = $(this).find('img.card-img')
+            return {
+                id,
+                title: img.attr('alt'),
+                litpic: img.attr('data-src')
+            }
+        }
+    ).get()
+}
+
+export const getDocument = async (
+    params: URLSearchParams,
+    path: string = '',
+    options?: cheerio.CheerioOptions
+) => {
+    const html = await getHtml(
+        getApiUrl(params.get('host')!, path)
+    )
+    const $ = cheerio.load(html, options)
+    return {
+        $,
+        html
+    }
+}
+
+export const getPagedList = async (path: string, params: URLSearchParams) => {
+    const { page } = getPageParams(params)
+    let $path = path
+    if (page > 1) {
+        $path += `page/${page}/`
+    }
+    const { $, html } = await getDocument(params, $path)
+    const list = getDataList($, '.video-grid a.group')
+    const total = +html.match(/共\s\d+\s个视频/)![0].match(/\d+/)![0]
+    const pages = +$('input.page-input').attr('data-max')!
+    return createDataPayload({
+        list,
+        page,
+        total,
+        total_pages: pages,
+    })
+}
+
 async function checkHost() {
     console.log('Start check host...')
     const urlMatchReg = /([a-z\d]{3,}\.)+[a-z]{2,4}/g
@@ -83,21 +144,35 @@ export async function withHost(params?: URLSearchParams) {
     throw new Error('Invalid host')
 }
 
-export const GET: APIRoute = ({ url }) => {
+export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const host = params.get('host')!
     const s = params.get('s')
     if (s) {
         const { page } = getPageParams(params)
-        const searchParams = new URLSearchParams({
-            q: s,
-            page: `${page}`
-        })
-        return proxyRequest(
-            getApiUrl(host, `/api/searchvideo?${searchParams}`)
+        const uri = new URL(
+            getApiUrl(host, '/api/search/video')
         )
+        uri.searchParams.set('keyword', s)
+        uri.searchParams.set('page', `${page}`)
+        const { data } = await getJson<{
+            data: any
+        }>(uri)
+        return createDataPayload(data)
     }
-    return proxyRequest(
-        getApiUrl(host, '/json/homepage/homepage_1049.json')
-    )
+    const { $ } = await getDocument(params)
+    const data = $('.home-section').filter(
+        function () {
+            return $(this).find('#recommend-grid').length === 0
+        }
+    ).map(
+        function () {
+            return {
+                id: +$(this).find('.more-btn').attr('href')!.match(/\d+/)![0],
+                name: $(this).find('.section-title').text(),
+                list: getDataList($, $(this).find('.home-grid a.group'))
+            }
+        }
+    ).get()
+    return createDataPayload(data)
 }

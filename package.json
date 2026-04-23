@@ -10,9 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
-    "@astrojs/node": "^9.5.3",
-    "astro": "^5.17.2",
+    "@astrojs/cloudflare": "^13.1.10",
+    "@astrojs/node": "^10.0.5",
+    "astro": "^6.1.8",
     "cheerio": "^1.2.0"
   },
   "devDependencies": {

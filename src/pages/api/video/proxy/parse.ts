@@ -1,12 +1,32 @@
 import type { APIRoute } from 'astro'
-import { proxyRequest } from '@adaptors/common'
-import { getApiUrl, invalidQueryRequest } from '.'
+import { createDataPayload, getDocument, getDataList, invalidQueryRequest } from '.'
 
-export const GET: APIRoute = ({ url }) => {
+export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
-    const host = params.get('host')!
     const id = params.get('id')
-    return id ? proxyRequest(
-        getApiUrl(host, `/json/detail/detail_${id}.json`)
-    ) : invalidQueryRequest('id')
+    if (id !== null) {
+        const { $ } = await getDocument(params, `/vd/${id}/`)
+        const [tag, title] = $('.mb-3 .text-lg').text().split('|')
+        const meta = $('#player-wrap')
+        const routes: string[] = []
+        for (let i = 1; i < 10; i++) {
+            const route = meta.attr(`data-route${i}`)
+            if (route) {
+                routes.push(route)
+            }
+            else {
+                break
+            }
+        }
+        const playUrl = routes[Math.floor(routes.length * Math.random())] + meta.attr('data-m3u8')!
+        const downloadUrl = meta.attr('data-dl-base')! + meta.attr('data-mp4')!
+        return createDataPayload({
+            title,
+            tags: [tag],
+            play_url: playUrl,
+            download_url: downloadUrl,
+            related: getDataList($, '.video-grid .group')
+        })
+    }
+    return invalidQueryRequest('id')
 }
