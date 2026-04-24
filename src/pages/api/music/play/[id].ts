@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 import { createApiAdaptor, parseId } from '@adaptors/.'
-import { httpHeaders } from '@util/common'
+import { httpHeaders } from '@util/http'
 
 export const GET: APIRoute = async ({ params }) => {
     try {

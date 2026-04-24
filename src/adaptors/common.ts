@@ -1,53 +1,7 @@
 import type { Adaptor } from '.'
 import { isTextNotNull } from '@util/string'
-import { httpHeaders } from '@util/common'
-export { isTextNotNull, escapeSymbols } from '@util/string'
 
 export const defaultPoster = `/poster.jpg`
-
-export function getResponse(...args: Parameters<typeof fetch>): Promise<Response> {
-    return fetch(...args)
-}
-
-export async function getText(...args: Parameters<typeof fetch>): Promise<string> {
-    const response = await getResponse(...args)
-    return response.text()
-}
-
-export async function getJson<T = any>(...args: Parameters<typeof fetch>): Promise<T> {
-    const response = await getResponse(...args)
-    return response.json() as Promise<T>
-}
-
-export async function getTextWithTimeout(...args: Parameters<typeof fetch>): Promise<string | null> {
-    const [url, init] = args
-    const abortController = new AbortController()
-    const timeout = setTimeout(() => abortController.abort(), 5e3)
-    try {
-        const text = await getText(url, {
-            ...init,
-            headers: httpHeaders.client,
-            signal: abortController.signal
-        })
-        return text
-    }
-    catch (err) {
-        return null
-    } finally {
-        clearTimeout(timeout)
-    }
-}
-
-export async function proxyRequest(...args: Parameters<typeof fetch>) {
-    const response = await getResponse(...args)
-    return new Response(await response.blob(), {
-        status: 200,
-        headers: {
-            ...response.headers,
-            ...httpHeaders.cors,
-        }
-    })
-}
 
 export function parseId(id: string) {
     const key = id[0] as Adaptor;

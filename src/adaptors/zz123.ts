@@ -1,6 +1,7 @@
-import { getResponse, parseLrcText, getTextWithTimeout } from '.';
-import { timeFormatter } from '@util/date';
-import { utf82utf16 } from '@util/parser';
+import { parseLrcText } from '.'
+import { getResponse, getTextWithTimeout } from '@util/http'
+import { timeFormatter } from '@util/date'
+import { utf82utf16 } from '@util/parser'
 
 export const key = 'z';
 

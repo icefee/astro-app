@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { getJson } from '@adaptors/.'
+import { getJson } from '@util/http'
 import { getApiUrl, createDataPayload } from '.'
 
 export const GET: APIRoute = async ({ url }) => {

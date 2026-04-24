@@ -1,4 +1,5 @@
-import { cheerio, getTextWithTimeout, getJson, parseLrcText } from '.'
+import { cheerio, parseLrcText } from '.'
+import { getTextWithTimeout, getJson } from '@util/http'
 import { timeFormatter } from '@util/date'
 
 export const key = 'g'

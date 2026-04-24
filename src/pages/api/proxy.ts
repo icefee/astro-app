@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { httpHeaders, unsafe_fetch } from '@util/common'
+import { httpHeaders, unsafe_fetch } from '@util/http'
 import { userAgent } from '@util/env'
 
 const inheritedHeaders: Array<{

@@ -1,8 +1,7 @@
 import type { APIRoute } from 'astro'
-import { getText, proxyRequest, cheerio, getJson } from '@adaptors/.'
-import { httpHeaders, } from '@util/common'
+import * as cheerio from 'cheerio'
+import { httpHeaders, getText, getJson } from '@util/http'
 import { isDev } from '@util/env'
-import { utf82utf16 } from '@util/parser'
 import { Api } from '@util/config'
 
 const checkUrl = 'https://8x8x.com'

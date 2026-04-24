@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro'
-import { getJson } from '@adaptors/.'
-import { httpHeaders } from '@util/common'
+import { httpHeaders, getJson } from '@util/http'
 
 export const GET: APIRoute = async () => {
     const url = new URL('https://cn.bing.com/hp/api/v1/imagegallery?format=json')

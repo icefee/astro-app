@@ -1,4 +1,6 @@
-import { getTextWithTimeout, getJson, parseLrcText, escapeSymbols } from '.'
+import { parseLrcText } from '.'
+import { getTextWithTimeout, getJson } from '@util/http'
+import { escapeSymbols } from '@util/string'
 import { timeFormatter } from '@util/date'
 import { userAgent } from '@util/env'
 

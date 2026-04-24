@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 import { Api } from '@util/config'
-import { httpHeaders } from '@util/common'
+import { httpHeaders } from '@util/http'
 
 export const GET: APIRoute = async ({ url }) => {
     const headers = {
