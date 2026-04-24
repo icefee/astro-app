@@ -9,7 +9,7 @@ export const unsafe_fetch: typeof fetch = (...args) => {
 export namespace httpHeaders {
 
     export const json = {
-        'content-type': 'application/json'
+        'content-type': 'application/json;charset=utf-8'
     }
 
     export const html = {
