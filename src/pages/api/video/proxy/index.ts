@@ -23,29 +23,6 @@ export const getHtml = (url: string) => getText(url, {
     headers: httpHeaders.client
 })
 
-async function getMatch(url: string, reg: RegExp): Promise<Record<'source' | 'result', string | null>> {
-    try {
-        const source = await getHtml(url)
-        const matches = source.match(reg)
-        if (matches) {
-            return {
-                source,
-                result: matches[0]
-            }
-        }
-        return {
-            source,
-            result: null
-        }
-    }
-    catch (err) {
-        return {
-            source: null,
-            result: null
-        }
-    }
-}
-
 export const invalidQueryRequest = (key: string) => new Response(`invalid query: ${key}`, {
     status: 400
 })
@@ -111,26 +88,23 @@ export const getPagedList = async (path: string, params: URLSearchParams) => {
     })
 }
 
+export function randomPick<T>(items: T[]) {
+    return items[Math.floor(items.length * Math.random())]
+}
+
 async function checkHost() {
     console.log('Start check host...')
-    const urlMatchReg = /([a-z\d]{3,}\.)+[a-z]{2,4}/g
-    const blockMatchReg = new RegExp(`<br class="showBr"><a href="https?://${urlMatchReg.source}"`)
-    let { source, result } = await getMatch(
+    const html = await getHtml(
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
-        blockMatchReg
     )
-    if (!result) {
-        if (!source) {
-            return null
+    const $ = cheerio.load(html)
+    const hosts = $('.abc a').map(
+        function () {
+            const url = $(this).attr('href')!
+            return new URL(url).host
         }
-        const base64Text = source.match(
-            new RegExp(`base64\\s=\\s"[\\w\\/\\+]+\={0,2}"`)
-        )![0]
-        const base64 = base64Text.slice(10, base64Text.length - 1)
-        source = utf82utf16(atob(base64))
-        result = source.match(blockMatchReg)![0]
-    }
-    return result.match(urlMatchReg)?.[0]
+    ).get()
+    return randomPick(hosts)
 }
 
 export async function withHost(params?: URLSearchParams) {

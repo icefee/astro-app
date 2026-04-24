@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { createDataPayload, getDocument, getDataList, invalidQueryRequest } from '.'
+import { createDataPayload, getDocument, getDataList, randomPick, invalidQueryRequest } from '.'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
@@ -18,7 +18,7 @@ export const GET: APIRoute = async ({ url }) => {
                 break
             }
         }
-        const playUrl = routes[Math.floor(routes.length * Math.random())] + meta.attr('data-m3u8')!
+        const playUrl = randomPick(routes) + meta.attr('data-m3u8')!
         const downloadUrl = meta.attr('data-dl-base')! + meta.attr('data-mp4')!
         return createDataPayload({
             title,
