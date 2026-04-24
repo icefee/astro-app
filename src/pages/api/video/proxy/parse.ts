@@ -6,7 +6,7 @@ export const GET: APIRoute = async ({ url }) => {
     const id = params.get('id')
     if (id !== null) {
         const { $ } = await getDocument(params, `/vd/${id}/`)
-        const [tag, title] = $('.mb-3 .text-lg').text().split('|')
+        const [title, tag] = $('.mb-3 .text-lg').text().split(/\||\-/)
         const meta = $('#player-wrap')
         const routes: string[] = []
         for (let i = 1; i < 10; i++) {
