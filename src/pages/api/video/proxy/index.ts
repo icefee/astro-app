@@ -141,7 +141,7 @@ export const GET: APIRoute = async ({ url }) => {
     ).map(
         function () {
             return {
-                id: +$(this).find('.more-btn').attr('href')!.match(/\d+/)![0],
+                value: +$(this).find('.more-btn').attr('href')!.match(/\d+/)![0],
                 name: $(this).find('.section-title').text(),
                 list: getDataList($, $(this).find('.home-grid a.group'))
             }
