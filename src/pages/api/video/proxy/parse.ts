@@ -6,7 +6,7 @@ export const GET: APIRoute = async ({ url }) => {
     const id = params.get('id')
     if (id !== null) {
         const { $ } = await getDocument(params, `/vd/${id}/`)
-        const [title, tag] = $('.mb-3 .text-lg').text().split(/\||\-/)
+        const [title, tag] = $('.mb-3 .text-lg').text().split(/-(?=[^-]+$)/)
         const meta = $('#player-wrap')
         const routes: string[] = []
         for (let i = 1; i < 10; i++) {
@@ -18,10 +18,13 @@ export const GET: APIRoute = async ({ url }) => {
                 break
             }
         }
+        const litpic = meta.attr('data-poster')
         const playUrl = randomPick(routes) + meta.attr('data-m3u8')!
         const downloadUrl = meta.attr('data-dl-base')! + meta.attr('data-mp4')!
         return createDataPayload({
+            id: +id,
             title,
+            litpic,
             tags: [tag],
             play_url: playUrl,
             download_url: downloadUrl,
