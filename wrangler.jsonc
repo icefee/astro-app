@@ -1,0 +1,7 @@
+{
+    "name": "astro-app",
+    "main": "@astrojs/cloudflare/entrypoints/server",
+    "compatibility_flags": [
+        "nodejs_compat"
+    ]
+}

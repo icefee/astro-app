@@ -7,9 +7,7 @@ export default defineConfig({
     server: {
         port: 4444
     },
-    adapter: cloudflare({
-        prerenderEnvironment: 'node'
-    }),
+    adapter: cloudflare(),
     security: {
         checkOrigin: false
     }
