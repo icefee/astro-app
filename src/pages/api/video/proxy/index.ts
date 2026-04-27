@@ -119,12 +119,11 @@ export async function withHost(params?: URLSearchParams) {
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
-    const host = params.get('host')!
     const s = params.get('s')
     if (s) {
         const { page } = getPageParams(params)
         const uri = new URL(
-            getApiUrl(host, '/api/search/video')
+            getApiUrl(params.get('host')!, '/api/search/video')
         )
         uri.searchParams.set('keyword', s)
         uri.searchParams.set('page', `${page}`)
