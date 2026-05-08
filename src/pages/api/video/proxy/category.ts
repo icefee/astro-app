@@ -5,7 +5,7 @@ export const GET: APIRoute = ({ url }) => {
     const params = url.searchParams
     const c = params.get('c')
     if (c !== null) {
-        return getPagedList(`/category/${c}/`, params)
+        return getPagedList(`/body/category/${c}/`, params)
     }
     return invalidQueryRequest('c')
 }

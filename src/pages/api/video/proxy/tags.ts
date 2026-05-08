@@ -5,7 +5,7 @@ import { getHtml, getApiUrl, createDataPayload } from '.'
 export const GET: APIRoute = async ({ url }) => {
     const host = url.searchParams.get('host')!
     const html = await getHtml(
-        getApiUrl(host)
+        getApiUrl(host, '/body')
     )
     const $ = cheerio.load(html)
     const categories = $('.cat-row a[data-cat-id]').map(
