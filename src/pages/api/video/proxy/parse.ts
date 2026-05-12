@@ -5,7 +5,7 @@ export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const id = params.get('id')
     if (id !== null) {
-        const { $, html } = await getDocument(params, `/body/vd/${id}/`)
+        const { $ } = await getDocument(params, `/body/vd/${id}/`)
         // const [title, tag] = $('.mb-3 .text-lg').text().split(/-(?=[^-]+$)/)
         const title = $('.mb-3 .text-lg').text()
         const meta = $('#player-wrap')
