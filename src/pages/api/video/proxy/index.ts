@@ -132,7 +132,7 @@ export const GET: APIRoute = async ({ url }) => {
         }>(uri)
         return createDataPayload(data)
     }
-    const { $ } = await getDocument(params, '/body')
+    const { $ } = await getDocument(params, '/sup')
     const data = $('.home-section').filter(
         function () {
             return $(this).find('#recommend-grid').length === 0

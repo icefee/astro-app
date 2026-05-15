@@ -1,13 +1,8 @@
 import type { APIRoute } from 'astro'
-import { cheerio } from '@adaptors/.'
-import { getHtml, getApiUrl, createDataPayload } from '.'
+import { getDocument, createDataPayload } from '.'
 
 export const GET: APIRoute = async ({ url }) => {
-    const host = url.searchParams.get('host')!
-    const html = await getHtml(
-        getApiUrl(host, '/body')
-    )
-    const $ = cheerio.load(html)
+    const { $ } = await getDocument(url.searchParams, '/sup')
     const categories = $('.cat-row a[data-cat-id]').map(
         function () {
             return {
