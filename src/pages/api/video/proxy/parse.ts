@@ -1,11 +1,12 @@
 import type { APIRoute } from 'astro'
-import { createDataPayload, getDocument, getDataList, randomPick, invalidQueryRequest } from '.'
+import { createDataPayload, getDocument, getBasePath, getDataList, randomPick, invalidQueryRequest } from '.'
 
 export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const id = params.get('id')
     if (id !== null) {
-        const { $ } = await getDocument(params, `/sup/vd/${id}/`)
+        const basePath = getBasePath(params)
+        const { $ } = await getDocument(params, `${basePath}/vd/${id}/`)
         // const [title, tag] = $('.mb-3 .text-lg').text().split(/-(?=[^-]+$)/)
         const title = $('.mb-3 .text-lg').text()
         const meta = $('#player-wrap')

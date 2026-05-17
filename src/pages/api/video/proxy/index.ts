@@ -3,12 +3,13 @@ import * as cheerio from 'cheerio'
 import { httpHeaders, getText, getJson } from '@util/http'
 import { isDev } from '@util/env'
 import { Api } from '@util/config'
+import { base64ToUtf8 } from '@util/base64'
 
 const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
 // const posterPrefix = 'https://v1imvvfc356.salantool.com'
 
-export const getApiUrl = (host: string, path: string = '') => 'https://' + host + path
+export const getApiUrl = (params: URLSearchParams, path: string = '') => 'https://' + params.get('host')! + path
 
 export const getPageParams = (params: URLSearchParams) => {
     const p = params.get('p')
@@ -60,7 +61,7 @@ export const getDocument = async (
     options?: cheerio.CheerioOptions
 ) => {
     const html = await getHtml(
-        getApiUrl(params.get('host')!, path)
+        getApiUrl(params, path)
     )
     const $ = cheerio.load(html, options)
     return {
@@ -69,9 +70,25 @@ export const getDocument = async (
     }
 }
 
+export const getBasePath = async (params: URLSearchParams) => {
+    try {
+        const { $ } = await getDocument(params)
+        const src = $('script').attr('src')!
+        const source = await getHtml(
+            getApiUrl(params, src)
+        )
+        const base64 = source.match(/atob\("([^"]*)"\)/)![1]
+        return '/' + base64ToUtf8(base64)
+    }
+    catch (err) {
+        return '/'
+    }
+}
+
 export const getPagedList = async (path: string, params: URLSearchParams) => {
+    const basePath = await getBasePath(params)
+    let $path = basePath + path
     const { page } = getPageParams(params)
-    let $path = path
     if (page > 1) {
         $path += `page/${page}/`
     }
@@ -123,7 +140,7 @@ export const GET: APIRoute = async ({ url }) => {
     if (s) {
         const { page } = getPageParams(params)
         const uri = new URL(
-            getApiUrl(params.get('host')!, '/api/search/video')
+            getApiUrl(params, '/api/search/video')
         )
         uri.searchParams.set('keyword', s)
         uri.searchParams.set('page', `${page}`)
@@ -132,7 +149,8 @@ export const GET: APIRoute = async ({ url }) => {
         }>(uri)
         return createDataPayload(data)
     }
-    const { $ } = await getDocument(params, '/sup')
+    const path = await getBasePath(params)
+    const { $ } = await getDocument(params, path)
     const data = $('.home-section').filter(
         function () {
             return $(this).find('#recommend-grid').length === 0
