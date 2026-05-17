@@ -5,7 +5,7 @@ export const GET: APIRoute = ({ url }) => {
     const params = url.searchParams
     const t = params.get('t')
     if (t !== null) {
-        return getPagedList(`/tags/${t}/`, params)
+        return getPagedList(`/tags/${encodeURIComponent(t)}/`, params)
     }
-    return invalidQueryRequest('c')
+    return invalidQueryRequest('t')
 }
