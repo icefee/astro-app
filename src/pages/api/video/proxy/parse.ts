@@ -5,7 +5,7 @@ export const GET: APIRoute = async ({ url }) => {
     const params = url.searchParams
     const id = params.get('id')
     if (id !== null) {
-        const basePath = getBasePath(params)
+        const basePath = await getBasePath(params)
         const { $ } = await getDocument(params, `${basePath}/vd/${id}/`)
         // const [title, tag] = $('.mb-3 .text-lg').text().split(/-(?=[^-]+$)/)
         const title = $('.mb-3 .text-lg').text()
