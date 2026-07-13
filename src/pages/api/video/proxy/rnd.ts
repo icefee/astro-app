@@ -59,7 +59,6 @@ export const GET: APIRoute = async ({ url }) => {
     const source = await getText(
         getApiUrl(url.searchParams, `/json/recommend/rmd_${t}`)
     )
-    return createDataPayload(
-        await decodeData(source)
-    )
+    const { list } = await decodeData(source)
+    return createDataPayload(list)
 }
