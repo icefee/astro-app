@@ -45,10 +45,11 @@ export const getDataList = (
     return (typeof selector === 'string' ? $(selector) : selector).map(
         function () {
             const id = +$(this).attr('href')!.match(/(\d+)/)![0]
+            const title = $(this).find('.card-title').text()
             const img = $(this).find('img.card-img')
             return {
                 id,
-                title: img.attr('alt'),
+                title,
                 litpic: img.attr('data-src')
             }
         }
