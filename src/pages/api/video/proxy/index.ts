@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import * as cheerio from 'cheerio'
+import { load, type CheerioAPI, type CheerioOptions } from 'cheerio'
 import { httpHeaders, getText, getJson } from '@util/http'
 import { isDev } from '@util/env'
 import { Api } from '@util/config'
@@ -39,7 +39,7 @@ export const createDataPayload = <T>(data: T) => new Response(JSON.stringify({
 })
 
 export const getDataList = (
-    $: cheerio.CheerioAPI,
+    $: CheerioAPI,
     selector: string | ReturnType<typeof $>
 ) => {
     return (typeof selector === 'string' ? $(selector) : selector).map(
@@ -59,12 +59,12 @@ export const getDataList = (
 export const getDocument = async (
     params: URLSearchParams,
     path: string = '',
-    options?: cheerio.CheerioOptions
+    options?: CheerioOptions
 ) => {
     const html = await getHtml(
         getApiUrl(params, path)
     )
-    const $ = cheerio.load(html, options)
+    const $ = load(html, options)
     return {
         $,
         html
@@ -74,7 +74,7 @@ export const getDocument = async (
 export const getBasePath = async (params: URLSearchParams) => {
     try {
         const { $ } = await getDocument(params)
-        const src = $('script').attr('src')!
+        const src = $('script').eq(1).attr('src')!
         const source = await getHtml(
             getApiUrl(params, src)
         )
@@ -114,7 +114,7 @@ async function checkHost() {
     const html = await getHtml(
         isDev ? `${Api.proxy}/api/proxy?url=${checkUrl}` : checkUrl,
     )
-    const $ = cheerio.load(html)
+    const $ = load(html)
     const hosts = $('.abc a').map(
         function () {
             const url = $(this).attr('href')!
