@@ -3,12 +3,16 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@data/*": [
+        "src/data/*"
+      ],
       "@util/*": [
         "src/util/*"
       ],
       "@adaptors/*": [
         "src/adaptors/*"
       ]
-    }
+    },
+    "resolveJsonModule": true
   }
 }
