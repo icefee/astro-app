@@ -5,9 +5,15 @@ import { isDev } from '@util/env'
 import { Api } from '@util/config'
 import { base64ToUtf8 } from '@util/base64'
 
+export interface VideoData {
+    id: number;
+    title: string;
+    litpic: string;
+}
+
 const checkUrl = 'https://8x8x.com'
 // const temporaryCheckUrl = 'https://mjv81xw.com'
-// const posterPrefix = 'https://v1imvvfc356.salantool.com'
+export const posterPrefix = 'https://5fcvv96x.w977j9.com:1443'
 
 export const getApiUrl = (params: URLSearchParams, path: string = '') => 'https://' + params.get('host')! + path
 

@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 import { getText } from '@util/http'
-import { getApiUrl, createDataPayload } from '.'
+import { getApiUrl, createDataPayload, posterPrefix, type VideoData } from '.'
 
 const base64ToBytes = (source: string) => {
     let s = source.replace(/-/g, '+').replace(/_/g, '/')
@@ -39,9 +39,9 @@ function utf8Decode(buffer: ArrayBuffer) {
 }
 
 
-const decodeData = async (source: string) => {
+const decodeData = async <T,>(source: string) => {
     try {
-        return JSON.parse(source)
+        return JSON.parse(source) as T
     }
     catch (err) {
         var raw = base64ToBytes(source.trim())
@@ -50,7 +50,7 @@ const decodeData = async (source: string) => {
         const key = await crypto.subtle
             .importKey('raw', _rk(), { name: 'AES-GCM' }, false, ['decrypt'])
         const buffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, body)
-        return JSON.parse(utf8Decode(buffer))
+        return JSON.parse(utf8Decode(buffer)) as T
     }
 }
 
@@ -59,6 +59,13 @@ export const GET: APIRoute = async ({ url }) => {
     const source = await getText(
         getApiUrl(url.searchParams, `/json/recommend/rmd_${t}`)
     )
-    const { list } = await decodeData(source)
-    return createDataPayload(list)
+    const { list } = await decodeData<{
+        list: VideoData[];
+    }>(source)
+    return createDataPayload(list.map(
+        ({ litpic, ...rest }) => ({
+            ...rest,
+            litpic: litpic.startsWith('http') ? litpic : `${posterPrefix}/${litpic}`
+        })
+    ))
 }
