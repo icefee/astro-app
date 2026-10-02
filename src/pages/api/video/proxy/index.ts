@@ -154,7 +154,16 @@ export const GET: APIRoute = async ({ url }) => {
         const { data } = await getJson<{
             data: any
         }>(uri)
-        return createDataPayload(data)
+        const { list, ...rest } = data
+        return createDataPayload({
+            list: list.map(
+                ({ litpic, ...rest }) => ({
+                    ...rest,
+                    litpic: litpic.startsWith('http') ? litpic : `${posterPrefix}/${litpic}`
+                })
+            ),
+            ...rest
+        })
     }
     const path = await getBasePath(params)
     const { $ } = await getDocument(params, path)
