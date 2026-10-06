@@ -24,7 +24,7 @@ export const GET: APIRoute = async ({ url }) => {
         const playUrl = randomPick(routes) + meta.attr('data-m3u8')!
         const downloadUrl = $('#dl-hd').attr('href') ?? $('#dl-sd').attr('href') // meta.attr('data-dl-base')! + meta.attr('data-mp4')!
         return createDataPayload({
-            id,
+            id: +id,
             title,
             litpic,
             play_url: playUrl,
