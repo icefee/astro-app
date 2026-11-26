@@ -154,14 +154,18 @@ export const GET: APIRoute = async ({ url }) => {
         const { data } = await getJson<{
             data: any
         }>(uri)
-        const { list, ...rest } = data
+        const { list, ...rest } = data as {
+            list: Array<{
+                litpic: string;
+            }>
+        }
         return createDataPayload({
-            list: list.map(
+            list: list?.map(
                 ({ litpic, ...rest }) => ({
                     ...rest,
                     litpic: litpic.startsWith('http') ? litpic : `${posterPrefix}/${litpic}`
                 })
-            ),
+            ) ?? [],
             ...rest
         })
     }
